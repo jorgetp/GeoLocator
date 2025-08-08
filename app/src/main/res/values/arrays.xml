@@ -1,6 +1,6 @@
 <resources>
     <string-array name="address_source_entries">
-        <item>Android Geocoder</item>
+        <item>Android Device</item>
         <item>Google Maps API</item>
     </string-array>
 

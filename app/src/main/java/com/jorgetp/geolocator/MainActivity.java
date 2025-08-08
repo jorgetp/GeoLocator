@@ -47,8 +47,8 @@ public class MainActivity extends AppCompatActivity {
     private FusedLocationProviderClient fusedLocationClient;
     private double lat = 0.0;
     private double lng = 0.0;
-    private String address = "Unknown Location";
-    private String plusCode = "Unknown Plus Code";
+    private String address = "Unknown";
+    private String plusCode = "Unknown";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -182,7 +182,8 @@ public class MainActivity extends AppCompatActivity {
             final StringBuilder geocodeResponse = new StringBuilder();
             String line;
             try {
-                /*// Prepare the HTTP POST request
+                /*
+                // Prepare the HTTP POST request
                 URL url = new URL("https://www.googleapis.com/geolocation/v1/geolocate?key=" + apiKey);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("POST");
@@ -206,7 +207,8 @@ public class MainActivity extends AppCompatActivity {
                 JSONObject json = new JSONObject(response.toString());
                 JSONObject location = json.getJSONObject("location");
                 lat = location.getDouble("lat");
-                lng = location.getDouble("lng");*/
+                lng = location.getDouble("lng");
+                */
 
                 // Get address using Geocoding API
                 String geocodeUrlStr = "https://maps.googleapis.com/maps/api/geocode/json?latlng="
@@ -225,7 +227,7 @@ public class MainActivity extends AppCompatActivity {
                     if (results.length() > 0) {
                         address = results.getJSONObject(0).getString("formatted_address");
                     } else {
-                        address = "Unknown Location";
+                        address = "Unknown";
                     }
                 }
 
@@ -233,14 +235,14 @@ public class MainActivity extends AppCompatActivity {
                 JSONObject plusCodeObj = geocodeJson.optJSONObject("plus_code");
                 if (plusCodeObj != null) {
                     if (plusCodeObj.has("compound_code")) {
-                        plusCode = plusCodeObj.optString("compound_code", "Unknown Plus Code");
+                        plusCode = plusCodeObj.optString("compound_code", "Unknown");
                     } else if (plusCodeObj.has("global_code")) {
-                        plusCode = plusCodeObj.optString("global_code", "Unknown Plus Code");
+                        plusCode = plusCodeObj.optString("global_code", "Unknown");
                     } else {
-                        plusCode = "Unknown Plus Code";
+                        plusCode = "Unknown";
                     }
                 } else {
-                    plusCode = "Unknown Plus Code";
+                    plusCode = "Unknown";
                 }
 
             } catch (Exception e) {
