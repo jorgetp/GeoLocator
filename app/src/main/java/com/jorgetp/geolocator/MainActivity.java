@@ -105,6 +105,9 @@ public class MainActivity extends AppCompatActivity {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
+        Button refreshButton = findViewById(R.id.button_refresh);
+        refreshButton.setEnabled(false);
+
         LinearLayout linearLayoutLocationInfo = findViewById(R.id.linearLayout_location_info);
         linearLayoutLocationInfo.setVisibility(View.INVISIBLE);
 
@@ -118,9 +121,9 @@ public class MainActivity extends AppCompatActivity {
                     if (location != null) {
                         lat = location.getLatitude();
                         lng = location.getLongitude();
-                        Log.d("Location", "Latitude: " + lat + ", Longitude: " + lng);
                         getAddress(location, true);
                         getPlusCode(true);
+                        Log.d("Location", "Latitude: " + lat + ", Longitude: " + lng);
                     } else {
                         Log.w("Location", "Location is null.");
                     }
@@ -140,8 +143,8 @@ public class MainActivity extends AppCompatActivity {
 
             if (addresses != null && !addresses.isEmpty()) {
                 address = addresses.get(0).getAddressLine(0);
-                Log.d("Address", "Address: " + address);
                 if (refreshUI) refreshUI();
+                Log.d("Address", "Address: " + address);
             } else {
                 Log.w("Address", "No address found.");
             }
@@ -165,6 +168,9 @@ public class MainActivity extends AppCompatActivity {
 
         ProgressBar progressBar = findViewById(R.id.progressBar_loading);
         progressBar.setVisibility(View.GONE);
+
+        Button refreshButton = findViewById(R.id.button_refresh);
+        refreshButton.setEnabled(true);
     }
 
     private void getPlusCode(boolean refreshUI) {
@@ -238,7 +244,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
             } catch (Exception e) {
-                // address = "Unable to get address";
+                address = "Unable to get address";
                 plusCode = "Unable to get Plus Code";
             }
 
