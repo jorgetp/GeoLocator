@@ -4,6 +4,8 @@ import android.Manifest;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -25,8 +27,10 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -38,7 +42,6 @@ import java.util.List;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
-    private static final String TAG = "MainActivity";
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1001;
 
     private FusedLocationProviderClient fusedLocationClient;
@@ -46,7 +49,6 @@ public class MainActivity extends AppCompatActivity {
     private double lng = 0.0;
     private String address = "Unknown Location";
     private String plusCode = "Unknown Plus Code";
-    private String googleMapsAPIResponse = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,14 +71,14 @@ public class MainActivity extends AppCompatActivity {
                     LOCATION_PERMISSION_REQUEST_CODE);
         }
 
-        getCurrentLocation();
+        getLocation();
 
         Button buttonCopyCoordinates = findViewById(R.id.button_copy_coordinates);
         buttonCopyCoordinates.setOnClickListener(v -> {
             ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
             ClipData clip = ClipData.newPlainText("Location Coordinates", lat + ", " + lng);
             clipboard.setPrimaryClip(clip);
-            Log.d(TAG, "Copied coordinates: " + lat + ", " + lng);
+            Log.d("MainActivity", "Copied coordinates: " + lat + ", " + lng);
         });
 
         Button buttonCopyAddress = findViewById(R.id.button_copy_address);
@@ -84,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
             ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
             ClipData clip = ClipData.newPlainText("Location Address", address);
             clipboard.setPrimaryClip(clip);
-            Log.d(TAG, "Copied address: " + address);
+            Log.d("MainActivity", "Copied address: " + address);
         });
 
         Button buttonCopyPlusCode = findViewById(R.id.button_copy_plus_code);
@@ -92,16 +94,14 @@ public class MainActivity extends AppCompatActivity {
             ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
             ClipData clip = ClipData.newPlainText("Location Plus Code", plusCode);
             clipboard.setPrimaryClip(clip);
-            Log.d(TAG, "Copied Plus Code: " + plusCode);
+            Log.d("MainActivity", "Copied Plus Code: " + plusCode);
         });
 
         Button refreshButton = findViewById(R.id.button_refresh);
-        refreshButton.setOnClickListener(v -> {
-            getCurrentLocation();
-        });
+        refreshButton.setOnClickListener(v -> getLocation());
     }
 
-    private void getCurrentLocation() {
+    private void getLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
@@ -111,13 +111,15 @@ public class MainActivity extends AppCompatActivity {
         ProgressBar progressBar = findViewById(R.id.progressBar_loading);
         progressBar.setVisibility(View.VISIBLE);
 
-        fusedLocationClient.getLastLocation()
-                .addOnSuccessListener(this, location -> {
+        fusedLocationClient.getCurrentLocation(
+                        LocationRequest.PRIORITY_HIGH_ACCURACY,
+                        null
+                ).addOnSuccessListener(this, location -> {
                     if (location != null) {
                         lat = location.getLatitude();
                         lng = location.getLongitude();
                         Log.d("Location", "Latitude: " + lat + ", Longitude: " + lng);
-                        getAddressFromLocation(location);
+                        getAddress(location, true);
                         getPlusCode(true);
                     } else {
                         Log.w("Location", "Location is null.");
@@ -126,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> Log.e("Location", "Failed to get location", e));
     }
 
-    private void getAddressFromLocation(Location location) {
+    private void getAddress(Location location, boolean refreshUI) {
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
 
         try {
@@ -139,6 +141,7 @@ public class MainActivity extends AppCompatActivity {
             if (addresses != null && !addresses.isEmpty()) {
                 address = addresses.get(0).getAddressLine(0);
                 Log.d("Address", "Address: " + address);
+                if (refreshUI) refreshUI();
             } else {
                 Log.w("Address", "No address found.");
             }
@@ -147,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void updateUI() {
+    private void refreshUI() {
         TextView textViewCoordinates = findViewById(R.id.textView_coordinates);
         textViewCoordinates.setText(String.format("%s, %s", lat, lng));
 
@@ -156,7 +159,6 @@ public class MainActivity extends AppCompatActivity {
 
         TextView textViewPlusCode = findViewById(R.id.textView_plus_code);
         textViewPlusCode.setText(plusCode);
-        //textViewPlusCode.setText(googleMapsAPIResponse);
 
         LinearLayout linearLayoutLocationInfo = findViewById(R.id.linearLayout_location_info);
         linearLayoutLocationInfo.setVisibility(View.VISIBLE);
@@ -167,7 +169,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void getPlusCode(boolean refreshUI) {
         new Thread(() -> {
-            String apiKey = "...";
+            SharedPreferences sharedPreferences = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this);
+            String apiKey = sharedPreferences.getString("api_key", "");
+            String addressSource = sharedPreferences.getString("address_source", "android");
+
             final StringBuilder geocodeResponse = new StringBuilder();
             String line;
             try {
@@ -209,13 +214,14 @@ public class MainActivity extends AppCompatActivity {
                 }
                 geocodeReader.close();
                 JSONObject geocodeJson = new JSONObject(geocodeResponse.toString());
-                /*JSONArray results = geocodeJson.getJSONArray("results");
-                if (results.length() > 0) {
-                    address = results.getJSONObject(0).getString("formatted_address");
-                } else {
-                    address = "Unknown Location";
-                }*/
-                googleMapsAPIResponse = geocodeJson.toString();
+                if (addressSource.equals("maps")) {
+                    JSONArray results = geocodeJson.getJSONArray("results");
+                    if (results.length() > 0) {
+                        address = results.getJSONObject(0).getString("formatted_address");
+                    } else {
+                        address = "Unknown Location";
+                    }
+                }
 
                 // Get Plus Code from geocode response if available
                 JSONObject plusCodeObj = geocodeJson.optJSONObject("plus_code");
@@ -237,8 +243,24 @@ public class MainActivity extends AppCompatActivity {
             }
 
             if (refreshUI)
-                runOnUiThread(this::updateUI);
+                runOnUiThread(this::refreshUI);
 
         }).start();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(android.view.Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(android.view.MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_settings) {
+            startActivity(new Intent(this, SettingsActivity.class));
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
