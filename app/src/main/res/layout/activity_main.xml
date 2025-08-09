@@ -41,23 +41,23 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="8dp"
                         android:text="📍 Coordinates"
-                        android:textSize="18sp"
+                        android:textSize="16sp"
                         android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/textView_coordinates"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
                         android:text="Unknown"
                         android:textSize="16sp" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/button_copy_coordinates"
                         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Copy Coordinates" />
+                        android:layout_gravity="end"
+                        android:text="Copy" />
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -81,23 +81,23 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="8dp"
                         android:text="🏠 Address"
-                        android:textSize="18sp"
+                        android:textSize="16sp"
                         android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/textView_address"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
                         android:text="Unknown"
                         android:textSize="16sp" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/button_copy_address"
                         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Copy Address" />
+                        android:layout_gravity="end"
+                        android:text="Copy" />
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -121,23 +121,23 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="8dp"
                         android:text="🌐 Google Maps Plus Code"
-                        android:textSize="18sp"
+                        android:textSize="16sp"
                         android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/textView_plus_code"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
                         android:text="Unknown"
                         android:textSize="16sp" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/button_copy_plus_code"
                         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Copy Plus Code" />
+                        android:layout_gravity="end"
+                        android:text="Copy" />
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
