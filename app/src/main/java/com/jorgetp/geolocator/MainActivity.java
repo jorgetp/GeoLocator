@@ -1,9 +1,6 @@
 package com.jorgetp.geolocator;
 
 import android.Manifest;
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -12,8 +9,6 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Button;
-import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,10 +17,13 @@ import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -70,32 +68,8 @@ public class MainActivity extends AppCompatActivity {
 
         getLocation();
 
-        Button buttonCopyCoordinates = findViewById(R.id.button_copy_coordinates);
-        buttonCopyCoordinates.setOnClickListener(v -> {
-            ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-            ClipData clip = ClipData.newPlainText("Location Coordinates", lat + ", " + lng);
-            clipboard.setPrimaryClip(clip);
-            Log.d("MainActivity", "Copied coordinates: " + lat + ", " + lng);
-        });
-
-        Button buttonCopyAddress = findViewById(R.id.button_copy_address);
-        buttonCopyAddress.setOnClickListener(v -> {
-            ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-            ClipData clip = ClipData.newPlainText("Location Address", address);
-            clipboard.setPrimaryClip(clip);
-            Log.d("MainActivity", "Copied address: " + address);
-        });
-
-        Button buttonCopyPlusCode = findViewById(R.id.button_copy_plus_code);
-        buttonCopyPlusCode.setOnClickListener(v -> {
-            ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-            ClipData clip = ClipData.newPlainText("Location Plus Code", plusCode);
-            clipboard.setPrimaryClip(clip);
-            Log.d("MainActivity", "Copied Plus Code: " + plusCode);
-        });
-
-        Button refreshButton = findViewById(R.id.button_refresh);
-        refreshButton.setOnClickListener(v -> getLocation());
+        FloatingActionButton fabRefresh = findViewById(R.id.fabRefresh);
+        fabRefresh.setOnClickListener(v -> getLocation());
     }
 
     @Override
@@ -118,9 +92,8 @@ public class MainActivity extends AppCompatActivity {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-        Button refreshButton = findViewById(R.id.button_refresh);
-        refreshButton.setText("Refreshing...");
-        refreshButton.setEnabled(false);
+        FloatingActionButton fabRefresh = findViewById(R.id.fabRefresh);
+        fabRefresh.setEnabled(false);
 
         fusedLocationClient.getCurrentLocation(
                         LocationRequest.PRIORITY_HIGH_ACCURACY,
@@ -216,17 +189,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void refreshUI() {
-        TextView textViewCoordinates = findViewById(R.id.textView_coordinates);
-        textViewCoordinates.setText(String.format("%s, %s", lat, lng));
+        RecyclerView rvCards = findViewById(R.id.rvCards);
+        rvCards.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        rvCards.setAdapter(new CardsAdapter(this, lat, lng, address, plusCode));
 
-        TextView textViewAddress = findViewById(R.id.textView_address);
-        textViewAddress.setText(address);
-
-        TextView textViewPlusCode = findViewById(R.id.textView_plus_code);
-        textViewPlusCode.setText(plusCode);
-
-        Button refreshButton = findViewById(R.id.button_refresh);
-        refreshButton.setText("Refresh");
-        refreshButton.setEnabled(true);
+        FloatingActionButton fabRefresh = findViewById(R.id.fabRefresh);
+        fabRefresh.setEnabled(true);
     }
 }
