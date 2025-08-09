@@ -1,11 +1,11 @@
 <resources>
     <string-array name="address_source_entries">
-        <item>Android Device</item>
+        <item>This device\'s GPS</item>
         <item>Google Maps API</item>
     </string-array>
 
     <string-array name="address_source_values">
-        <item>android</item>
+        <item>gps</item>
         <item>maps</item>
     </string-array>
 </resources>

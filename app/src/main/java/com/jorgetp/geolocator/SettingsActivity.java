@@ -1,5 +1,6 @@
 package com.jorgetp.geolocator;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
@@ -39,6 +40,8 @@ public class SettingsActivity extends AppCompatActivity {
     public static class SettingsFragment extends PreferenceFragmentCompat {
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+            getPreferenceManager().setSharedPreferencesName("settings");
+            getPreferenceManager().setSharedPreferencesMode(Context.MODE_PRIVATE);
             setPreferencesFromResource(R.xml.root_preferences, rootKey);
         }
     }

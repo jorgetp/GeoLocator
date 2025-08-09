@@ -12,10 +12,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -101,18 +98,29 @@ public class MainActivity extends AppCompatActivity {
         refreshButton.setOnClickListener(v -> getLocation());
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(android.view.Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(android.view.MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_settings) {
+            startActivity(new Intent(this, SettingsActivity.class));
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private void getLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
         Button refreshButton = findViewById(R.id.button_refresh);
+        refreshButton.setText("Refreshing...");
         refreshButton.setEnabled(false);
-
-        LinearLayout linearLayoutLocationInfo = findViewById(R.id.linearLayout_location_info);
-        linearLayoutLocationInfo.setVisibility(View.INVISIBLE);
-
-        ProgressBar progressBar = findViewById(R.id.progressBar_loading);
-        progressBar.setVisibility(View.VISIBLE);
 
         fusedLocationClient.getCurrentLocation(
                         LocationRequest.PRIORITY_HIGH_ACCURACY,
@@ -153,63 +161,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void refreshUI() {
-        TextView textViewCoordinates = findViewById(R.id.textView_coordinates);
-        textViewCoordinates.setText(String.format("%s, %s", lat, lng));
-
-        TextView textViewAddress = findViewById(R.id.textView_address);
-        textViewAddress.setText(address);
-
-        TextView textViewPlusCode = findViewById(R.id.textView_plus_code);
-        textViewPlusCode.setText(plusCode);
-
-        LinearLayout linearLayoutLocationInfo = findViewById(R.id.linearLayout_location_info);
-        linearLayoutLocationInfo.setVisibility(View.VISIBLE);
-
-        ProgressBar progressBar = findViewById(R.id.progressBar_loading);
-        progressBar.setVisibility(View.GONE);
-
-        Button refreshButton = findViewById(R.id.button_refresh);
-        refreshButton.setEnabled(true);
-    }
-
     private void getPlusCode(boolean refreshUI) {
         new Thread(() -> {
             SharedPreferences sharedPreferences = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this);
             String apiKey = sharedPreferences.getString("api_key", "");
             String addressSource = sharedPreferences.getString("address_source", "android");
-
-            final StringBuilder geocodeResponse = new StringBuilder();
-            String line;
             try {
-                /*
-                // Prepare the HTTP POST request
-                URL url = new URL("https://www.googleapis.com/geolocation/v1/geolocate?key=" + apiKey);
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestMethod("POST");
-                conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-                conn.setDoOutput(true);
-
-                // Send empty JSON body
-                OutputStream os = conn.getOutputStream();
-                os.write("{}".getBytes(StandardCharsets.UTF_8));
-                os.close();
-
-                // Read the response
-                BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                StringBuilder response = new StringBuilder();
-                while ((line = reader.readLine()) != null) {
-                    response.append(line);
-                }
-                reader.close();
-
-                // Parse JSON response
-                JSONObject json = new JSONObject(response.toString());
-                JSONObject location = json.getJSONObject("location");
-                lat = location.getDouble("lat");
-                lng = location.getDouble("lng");
-                */
-
                 // Get address using Geocoding API
                 String geocodeUrlStr = "https://maps.googleapis.com/maps/api/geocode/json?latlng="
                         + lat + "," + lng + "&key=" + apiKey;
@@ -217,6 +174,8 @@ public class MainActivity extends AppCompatActivity {
                 HttpURLConnection geocodeConn = (HttpURLConnection) geocodeUrl.openConnection();
                 geocodeConn.setRequestMethod("GET");
                 BufferedReader geocodeReader = new BufferedReader(new InputStreamReader(geocodeConn.getInputStream()));
+                String line;
+                StringBuilder geocodeResponse = new StringBuilder();
                 while ((line = geocodeReader.readLine()) != null) {
                     geocodeResponse.append(line);
                 }
@@ -256,19 +215,18 @@ public class MainActivity extends AppCompatActivity {
         }).start();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(android.view.Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
+    private void refreshUI() {
+        TextView textViewCoordinates = findViewById(R.id.textView_coordinates);
+        textViewCoordinates.setText(String.format("%s, %s", lat, lng));
 
-    @Override
-    public boolean onOptionsItemSelected(android.view.MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            startActivity(new Intent(this, SettingsActivity.class));
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+        TextView textViewAddress = findViewById(R.id.textView_address);
+        textViewAddress.setText(address);
+
+        TextView textViewPlusCode = findViewById(R.id.textView_plus_code);
+        textViewPlusCode.setText(plusCode);
+
+        Button refreshButton = findViewById(R.id.button_refresh);
+        refreshButton.setText("Refresh");
+        refreshButton.setEnabled(true);
     }
 }

@@ -8,7 +8,7 @@
             app:useSimpleSummaryProvider="true" />
 
         <ListPreference
-            app:defaultValue="android"
+            app:defaultValue="gps"
             app:entries="@array/address_source_entries"
             app:entryValues="@array/address_source_values"
             app:key="address_source"
