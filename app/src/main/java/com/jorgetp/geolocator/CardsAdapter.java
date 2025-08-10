@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -46,6 +47,7 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.ViewHolder> 
                     ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
                     ClipData clip = ClipData.newPlainText("Location Coordinates", lat + ", " + lng);
                     clipboard.setPrimaryClip(clip);
+                    Toast.makeText(context, "Coordinates copied", Toast.LENGTH_SHORT).show();
                 });
                 break;
             case 1:
@@ -56,6 +58,7 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.ViewHolder> 
                     ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
                     ClipData clip = ClipData.newPlainText("Location Address", address);
                     clipboard.setPrimaryClip(clip);
+                    Toast.makeText(context, "Address copied", Toast.LENGTH_SHORT).show();
                 });
                 break;
             case 2:
@@ -66,6 +69,7 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.ViewHolder> 
                     ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
                     ClipData clip = ClipData.newPlainText("Location Plus Code", plusCode);
                     clipboard.setPrimaryClip(clip);
+                    Toast.makeText(context, "Plus Code copied", Toast.LENGTH_SHORT).show();
                 });
                 break;
             default:

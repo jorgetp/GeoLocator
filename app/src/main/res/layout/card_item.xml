@@ -24,7 +24,7 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_gravity="center"
-                android:tint="?attr/colorPrimary"
+                android:tint="?attr/colorSecondary"
                 app:srcCompat="@drawable/outline_location_searching_24" />
 
             <LinearLayout
