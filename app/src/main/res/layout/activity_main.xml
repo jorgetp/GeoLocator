@@ -29,9 +29,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="12dp"
         android:alpha="0.6"
         android:text="@string/click_on_card_msg"
-        android:textAlignment="textEnd"
+        android:textAlignment="center"
         android:textColor="?android:textColorSecondary"
         android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -44,7 +45,6 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:src="@android:drawable/ic_popup_sync"
-        app:backgroundTint="?attr/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

@@ -13,7 +13,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.core.view.MenuCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -90,7 +89,7 @@ public class SavedLocationsAdapter extends RecyclerView.Adapter<SavedLocationsAd
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        CardView card;
+        View card;
         TextView tvTime, tvAddress;
 
         public ViewHolder(@NonNull View itemView) {

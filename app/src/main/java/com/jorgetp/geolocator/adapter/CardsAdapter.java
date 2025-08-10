@@ -11,7 +11,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.jorgetp.geolocator.R;
@@ -87,7 +86,7 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.ViewHolder> 
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView ivIcon;
-        CardView card;
+        View card;
         TextView tvTitle, tvValue;
 
         public ViewHolder(@NonNull View itemView) {
