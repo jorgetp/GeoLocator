@@ -9,6 +9,9 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -68,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
 
         getLocation();
 
-        FloatingActionButton fabRefresh = findViewById(R.id.fabRefresh);
+        FloatingActionButton fabRefresh = findViewById(R.id.fab_refresh);
         fabRefresh.setOnClickListener(v -> getLocation());
     }
 
@@ -92,8 +95,17 @@ public class MainActivity extends AppCompatActivity {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-        FloatingActionButton fabRefresh = findViewById(R.id.fabRefresh);
-        fabRefresh.setEnabled(false);
+
+        setTitle("Determining location...");
+
+        TextView tvMsg = findViewById(R.id.tv_msg);
+        tvMsg.setVisibility(View.GONE);
+
+        RecyclerView rvCards = findViewById(R.id.rv_cards);
+        rvCards.setVisibility(View.GONE);
+
+        ProgressBar progressBar = findViewById(R.id.pb);
+        progressBar.setVisibility(View.VISIBLE);
 
         fusedLocationClient.getCurrentLocation(
                         LocationRequest.PRIORITY_HIGH_ACCURACY,
@@ -189,11 +201,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void refreshUI() {
-        RecyclerView rvCards = findViewById(R.id.rvCards);
+        RecyclerView rvCards = findViewById(R.id.rv_cards);
         rvCards.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         rvCards.setAdapter(new CardsAdapter(this, lat, lng, address, plusCode));
+        rvCards.setVisibility(View.VISIBLE);
 
-        FloatingActionButton fabRefresh = findViewById(R.id.fabRefresh);
-        fabRefresh.setEnabled(true);
+        setTitle("Your location");
+        ProgressBar progressBar = findViewById(R.id.pb);
+        progressBar.setVisibility(View.GONE);
+
+        TextView tvMsg = findViewById(R.id.tv_msg);
+        tvMsg.setVisibility(View.VISIBLE);
     }
 }

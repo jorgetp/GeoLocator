@@ -6,11 +6,11 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.ViewHolder> {
@@ -31,7 +31,7 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.ViewHolder> 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.card, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.card_item, parent, false);
         return new ViewHolder(view);
     }
 
@@ -42,7 +42,7 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.ViewHolder> 
                 holder.ivIcon.setImageResource(R.drawable.outline_location_searching_24);
                 holder.tvTitle.setText("Coordinates");
                 holder.tvValue.setText(lat + ", " + lng);
-                holder.btnCopy.setOnClickListener(v -> {
+                holder.card.setOnClickListener(v -> {
                     ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
                     ClipData clip = ClipData.newPlainText("Location Coordinates", lat + ", " + lng);
                     clipboard.setPrimaryClip(clip);
@@ -52,7 +52,7 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.ViewHolder> 
                 holder.ivIcon.setImageResource(R.drawable.outline_home_24);
                 holder.tvTitle.setText("Address");
                 holder.tvValue.setText(address);
-                holder.btnCopy.setOnClickListener(v -> {
+                holder.card.setOnClickListener(v -> {
                     ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
                     ClipData clip = ClipData.newPlainText("Location Address", address);
                     clipboard.setPrimaryClip(clip);
@@ -62,7 +62,7 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.ViewHolder> 
                 holder.ivIcon.setImageResource(R.drawable.outline_map_24);
                 holder.tvTitle.setText("Google Maps Plus Code");
                 holder.tvValue.setText(plusCode);
-                holder.btnCopy.setOnClickListener(v -> {
+                holder.card.setOnClickListener(v -> {
                     ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
                     ClipData clip = ClipData.newPlainText("Location Plus Code", plusCode);
                     clipboard.setPrimaryClip(clip);
@@ -81,15 +81,15 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.ViewHolder> 
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView ivIcon;
+        CardView card;
         TextView tvTitle, tvValue;
-        Button btnCopy;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             ivIcon = itemView.findViewById(R.id.iv_icon);
+            card = itemView.findViewById(R.id.card);
             tvTitle = itemView.findViewById(R.id.tv_title);
             tvValue = itemView.findViewById(R.id.tv_value);
-            btnCopy = itemView.findViewById(R.id.btn_copy);
         }
     }
 }
