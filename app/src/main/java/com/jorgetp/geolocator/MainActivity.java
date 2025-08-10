@@ -1,6 +1,7 @@
 package com.jorgetp.geolocator;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,6 +29,7 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.jorgetp.geolocator.adapter.CardsAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -88,6 +91,21 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.action_settings) {
             startActivity(new Intent(this, SettingsActivity.class));
             return true;
+        } else if (id == R.id.action_save) {
+            new Thread(() -> {
+                SharedPreferences sharedPreferences = getSharedPreferences("saved_locations", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                long timestamp = System.currentTimeMillis();
+                editor.putString("" + timestamp, address);
+                editor.apply();
+                runOnUiThread(() -> {
+                    Toast.makeText(this, "Location saved", Toast.LENGTH_SHORT).show();
+                });
+            }).start();
+            return true;
+        } else if (id == R.id.action_saved) {
+            startActivity(new Intent(this, SavedLocationsActivity.class));
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -97,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        setTitle("Determining location...");
+        setTitle(getString(R.string.determining_location));
 
         TextView tvMsg = findViewById(R.id.tv_msg);
         tvMsg.setVisibility(View.GONE);
@@ -207,7 +225,7 @@ public class MainActivity extends AppCompatActivity {
         rvCards.setAdapter(new CardsAdapter(this, lat, lng, address, plusCode));
         rvCards.setVisibility(View.VISIBLE);
 
-        setTitle("Your location");
+        setTitle(getString(R.string.your_location));
         ProgressBar progressBar = findViewById(R.id.pb);
         progressBar.setVisibility(View.GONE);
 

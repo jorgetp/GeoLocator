@@ -1,4 +1,4 @@
-package com.jorgetp.geolocator;
+package com.jorgetp.geolocator.adapter;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -13,6 +13,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.jorgetp.geolocator.R;
 
 public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.ViewHolder> {
     private final Context context;

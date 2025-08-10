@@ -5,4 +5,11 @@
     <string name="general_header">General</string>
     <string name="address_source_title">Address Source</string>
     <string name="action_settings">Settings</string>
+    <string name="action_save">Save Location</string>
+    <string name="action_saved">View Saved Locations</string>
+    <string name="your_location">Your Location</string>
+    <string name="determining_location">Determining Location…</string>
+    <string name="saved_locations">Saved Locations</string>
+    <string name="delete">Delete</string>
+    <string name="copy_address">Copy Address</string>
 </resources>
