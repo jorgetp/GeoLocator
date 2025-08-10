@@ -69,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
                     LOCATION_PERMISSION_REQUEST_CODE);
         }
 
+
         getLocation();
 
         FloatingActionButton fabRefresh = findViewById(R.id.fab_refresh);

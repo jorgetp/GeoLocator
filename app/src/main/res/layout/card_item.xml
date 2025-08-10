@@ -21,10 +21,10 @@
 
             <ImageView
                 android:id="@+id/iv_icon"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_marginTop="2dp"
-                android:tint="?attr/colorSecondary"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                android:tint="?attr/colorPrimary"
                 app:srcCompat="@drawable/outline_location_searching_24" />
 
             <LinearLayout
