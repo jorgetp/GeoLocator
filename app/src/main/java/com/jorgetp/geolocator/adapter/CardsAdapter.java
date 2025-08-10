@@ -43,35 +43,35 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.ViewHolder> 
         switch (position) {
             case 0:
                 holder.ivIcon.setImageResource(R.drawable.outline_location_searching_24);
-                holder.tvTitle.setText("Coordinates");
-                holder.tvValue.setText(lat + ", " + lng);
+                holder.tvTitle.setText(R.string.coordinates);
+                holder.tvValue.setText(String.format("%s, %s", lat, lng));
                 holder.card.setOnClickListener(v -> {
                     ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-                    ClipData clip = ClipData.newPlainText("Location Coordinates", lat + ", " + lng);
+                    ClipData clip = ClipData.newPlainText("Coordinates", lat + ", " + lng);
                     clipboard.setPrimaryClip(clip);
-                    Toast.makeText(context, "Coordinates copied", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, R.string.coordinates_copied, Toast.LENGTH_SHORT).show();
                 });
                 break;
             case 1:
                 holder.ivIcon.setImageResource(R.drawable.outline_home_24);
-                holder.tvTitle.setText("Address");
+                holder.tvTitle.setText(R.string.address);
                 holder.tvValue.setText(address);
                 holder.card.setOnClickListener(v -> {
                     ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-                    ClipData clip = ClipData.newPlainText("Location Address", address);
+                    ClipData clip = ClipData.newPlainText("Address", address);
                     clipboard.setPrimaryClip(clip);
-                    Toast.makeText(context, "Address copied", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, R.string.address_copied, Toast.LENGTH_SHORT).show();
                 });
                 break;
             case 2:
                 holder.ivIcon.setImageResource(R.drawable.outline_map_24);
-                holder.tvTitle.setText("Google Maps Plus Code");
+                holder.tvTitle.setText(R.string.google_maps_plus_code);
                 holder.tvValue.setText(plusCode);
                 holder.card.setOnClickListener(v -> {
                     ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-                    ClipData clip = ClipData.newPlainText("Location Plus Code", plusCode);
+                    ClipData clip = ClipData.newPlainText("Plus Code", plusCode);
                     clipboard.setPrimaryClip(clip);
-                    Toast.makeText(context, "Plus Code copied", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, R.string.plus_code_copied, Toast.LENGTH_SHORT).show();
                 });
                 break;
             default:

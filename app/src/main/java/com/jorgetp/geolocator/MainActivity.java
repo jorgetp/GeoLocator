@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
                 editor.putString("" + timestamp, address);
                 editor.apply();
                 runOnUiThread(() -> {
-                    Toast.makeText(this, "Location saved", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.location_saved, Toast.LENGTH_SHORT).show();
                 });
             }).start();
             return true;
@@ -209,8 +209,8 @@ public class MainActivity extends AppCompatActivity {
                 }
 
             } catch (Exception e) {
-                address = "Unable to get address";
-                plusCode = "Unable to get Plus Code";
+                address = "Unknown";
+                plusCode = "Unknown";
             }
 
             if (refreshUI)

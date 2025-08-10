@@ -66,7 +66,7 @@ public class SavedLocationsAdapter extends RecyclerView.Adapter<SavedLocationsAd
                     ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
                     ClipData clip = ClipData.newPlainText("Location Address", savedLocations.get(position).second);
                     clipboard.setPrimaryClip(clip);
-                    Toast.makeText(context, "Address copied", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, R.string.address_copied, Toast.LENGTH_SHORT).show();
 
                 } else if (item.getItemId() == R.id.delete) {
                     SharedPreferences sharedPreferences = context.getSharedPreferences("saved_locations", Context.MODE_PRIVATE);
@@ -75,7 +75,7 @@ public class SavedLocationsAdapter extends RecyclerView.Adapter<SavedLocationsAd
                     editor.apply();
                     savedLocations.remove(position);
                     notifyItemRemoved(position);
-                    Toast.makeText(context, "Location deleted", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, R.string.location_deleted, Toast.LENGTH_SHORT).show();
                 }
                 return true;
             });

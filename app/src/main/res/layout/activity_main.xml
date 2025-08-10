@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:alpha="0.6"
-        android:text="Click on a card to copy its value"
+        android:text="@string/click_on_card_msg"
         android:textAlignment="textEnd"
         android:textColor="?android:textColorSecondary"
         android:textSize="12sp"

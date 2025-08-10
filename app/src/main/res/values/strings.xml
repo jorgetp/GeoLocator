@@ -12,4 +12,13 @@
     <string name="saved_locations">Saved Locations</string>
     <string name="delete">Delete</string>
     <string name="copy_address">Copy Address</string>
+    <string name="address_copied">Address Copied</string>
+    <string name="location_deleted">Location Deleted</string>
+    <string name="location_saved">Location Saved</string>
+    <string name="coordinates">Coordinates</string>
+    <string name="address">Address</string>
+    <string name="google_maps_plus_code">Google Maps Plus Code</string>
+    <string name="plus_code_copied">Code Copied</string>
+    <string name="coordinates_copied">Coordinates Copied</string>
+    <string name="click_on_card_msg">Click on a card to copy its value</string>
 </resources>
