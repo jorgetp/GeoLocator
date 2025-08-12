@@ -93,14 +93,25 @@ public class MainActivity extends AppCompatActivity {
             return true;
         } else if (id == R.id.action_save) {
             new Thread(() -> {
-                SharedPreferences sharedPreferences = getSharedPreferences("saved_locations", Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                long timestamp = System.currentTimeMillis();
-                editor.putString("" + timestamp, address);
-                editor.apply();
-                runOnUiThread(() -> {
-                    Toast.makeText(this, R.string.location_saved, Toast.LENGTH_SHORT).show();
-                });
+
+                JSONObject jsonObject = new JSONObject();
+                try {
+                    jsonObject.put("lat", lat);
+                    jsonObject.put("lng", lng);
+                    jsonObject.put("address", address);
+                    jsonObject.put("plus_code", plusCode);
+
+                    SharedPreferences sharedPreferences = getSharedPreferences("saved_locations", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    long timestamp = System.currentTimeMillis();
+                    editor.putString("" + timestamp, jsonObject.toString());
+                    editor.apply();
+                    runOnUiThread(() -> {
+                        Toast.makeText(this, R.string.location_saved, Toast.LENGTH_SHORT).show();
+                    });
+                } catch (Exception e) {
+                    //e.printStackTrace();
+                }
             }).start();
             return true;
         } else if (id == R.id.action_saved) {

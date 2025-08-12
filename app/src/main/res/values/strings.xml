@@ -11,6 +11,7 @@
     <string name="determining_location">Determining Location…</string>
     <string name="saved_locations">Saved Locations</string>
     <string name="delete">Delete</string>
+    <string name="copy_coordinates">Copy Coordinates</string>
     <string name="copy_address">Copy Address</string>
     <string name="address_copied">Address Copied</string>
     <string name="location_deleted">Location Deleted</string>
@@ -21,4 +22,5 @@
     <string name="plus_code_copied">Code Copied</string>
     <string name="coordinates_copied">Coordinates Copied</string>
     <string name="click_on_card_msg">Click on a card to copy its value</string>
+    <string name="copy_plus_code">Copy Plus Code</string>
 </resources>

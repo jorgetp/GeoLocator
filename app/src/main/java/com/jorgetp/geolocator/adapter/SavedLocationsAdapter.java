@@ -18,6 +18,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.jorgetp.geolocator.R;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -25,7 +28,7 @@ import java.util.Locale;
 
 public class SavedLocationsAdapter extends RecyclerView.Adapter<SavedLocationsAdapter.ViewHolder> {
     private final Context context;
-    private final ArrayList<Pair<Long, String>> savedLocations = new ArrayList<>();
+    private final ArrayList<Pair<Long, JSONObject>> savedLocations = new ArrayList<>();
 
     public SavedLocationsAdapter(Context context) {
         this.context = context;
@@ -33,8 +36,13 @@ public class SavedLocationsAdapter extends RecyclerView.Adapter<SavedLocationsAd
         SharedPreferences sharedPreferences = context.getSharedPreferences("saved_locations", Context.MODE_PRIVATE);
         for (int i = 0; i < sharedPreferences.getAll().size(); i++) {
             String key = sharedPreferences.getAll().keySet().toArray()[i].toString();
-            String value = sharedPreferences.getString(key, "");
-            savedLocations.add(new Pair<>(Long.parseLong(key), value));
+            String value = sharedPreferences.getString(key, "{}");
+            try {
+                JSONObject jsonObject = new JSONObject(value);
+                savedLocations.add(new Pair<>(Long.parseLong(key), jsonObject));
+            } catch (JSONException e) {
+                //e.printStackTrace();
+            }
         }
         savedLocations.sort((o1, o2) -> o2.first.compareTo(o1.first));
     }
@@ -54,18 +62,36 @@ public class SavedLocationsAdapter extends RecyclerView.Adapter<SavedLocationsAd
         formattedTime = formattedTime.substring(0, 1).toUpperCase() + formattedTime.substring(1);
 
         holder.tvTime.setText(formattedTime);
-        holder.tvAddress.setText(savedLocations.get(position).second);
+
+        String lat = savedLocations.get(position).second.optString("lat");
+        String lng = savedLocations.get(position).second.optString("lng");
+        String address = savedLocations.get(position).second.optString("address");
+        String plusCode = savedLocations.get(position).second.optString("plus_code");
+
+        holder.tvAddress.setText(address);
         holder.card.setOnClickListener(v -> {
             PopupMenu popup = new PopupMenu(context, v);
             popup.getMenuInflater().inflate(R.menu.saved_location_popup_menu, popup.getMenu());
             MenuCompat.setGroupDividerEnabled(popup.getMenu(), true);
 
             popup.setOnMenuItemClickListener(item -> {
-                if (item.getItemId() == R.id.copy) {
+                if (item.getItemId() == R.id.copy_coordinates) {
                     ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-                    ClipData clip = ClipData.newPlainText("Location Address", savedLocations.get(position).second);
+                    ClipData clip = ClipData.newPlainText("Coordinates", String.format("%s, %s", lat, lng));
+                    clipboard.setPrimaryClip(clip);
+                    Toast.makeText(context, R.string.coordinates_copied, Toast.LENGTH_SHORT).show();
+
+                } else if (item.getItemId() == R.id.copy_address) {
+                    ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+                    ClipData clip = ClipData.newPlainText("Address", address);
                     clipboard.setPrimaryClip(clip);
                     Toast.makeText(context, R.string.address_copied, Toast.LENGTH_SHORT).show();
+
+                } else if (item.getItemId() == R.id.copy_plus_code) {
+                    ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+                    ClipData clip = ClipData.newPlainText("Plus Code", plusCode);
+                    clipboard.setPrimaryClip(clip);
+                    Toast.makeText(context, R.string.plus_code_copied, Toast.LENGTH_SHORT).show();
 
                 } else if (item.getItemId() == R.id.delete) {
                     SharedPreferences sharedPreferences = context.getSharedPreferences("saved_locations", Context.MODE_PRIVATE);
