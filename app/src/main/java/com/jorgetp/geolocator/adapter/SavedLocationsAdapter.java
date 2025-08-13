@@ -104,6 +104,7 @@ public class SavedLocationsAdapter extends RecyclerView.Adapter<SavedLocationsAd
                                 SharedPreferences.Editor editor = sharedPreferences.edit();
                                 editor.remove("" + savedLocations.get(position).first);
                                 editor.apply();
+
                                 savedLocations.remove(position);
                                 notifyItemRemoved(position);
                                 Toast.makeText(context, R.string.location_deleted, Toast.LENGTH_SHORT).show();
@@ -120,7 +121,7 @@ public class SavedLocationsAdapter extends RecyclerView.Adapter<SavedLocationsAd
 
                         TextView tvTime = dialog.findViewById(R.id.tv_time);
                         //tvTime.setText(holder.tvTime.getText());
-                        //tvTime.setTextSize(16);
+                        //tvTime.setTextSize(18);
                         tvTime.setVisibility(View.GONE);
 
                         TextView tvAddress = dialog.findViewById(R.id.tv_address);
