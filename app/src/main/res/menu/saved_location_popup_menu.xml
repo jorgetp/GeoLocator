@@ -1,16 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:id="@+id/copy_coordinates"
-        android:title="@string/copy_coordinates" />
-    <item
-        android:id="@+id/copy_address"
-        android:title="@string/copy_address" />
-    <item
-        android:id="@+id/copy_plus_code"
-        android:title="@string/copy_plus_code" />
-
-    <item
-        android:id="@+id/delete"
-        android:title="@string/delete" />
+    <group android:id="@+id/group_copy">
+        <item
+            android:id="@+id/copy_coordinates"
+            android:title="@string/copy_coordinates" />
+        <item
+            android:id="@+id/copy_address"
+            android:title="@string/copy_address" />
+        <item
+            android:id="@+id/copy_plus_code"
+            android:title="@string/copy_plus_code" />
+    </group>
+    <group android:id="@+id/group_general">
+        <item
+            android:id="@+id/delete"
+            android:title="@string/delete" />
+        <item
+            android:id="@+id/popout"
+            android:title="@string/popout" />
+    </group>
 </menu>

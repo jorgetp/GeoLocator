@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:id="@+id/action_save"
-        android:title="@string/action_save" />
-    <item
-        android:id="@+id/action_saved"
-        android:title="@string/action_saved" />
-    <item
-        android:id="@+id/action_settings"
-        android:title="@string/action_settings" />
+    <group android:id="@+id/group_save">
+        <item
+            android:id="@+id/action_save"
+            android:title="@string/action_save" />
+        <item
+            android:id="@+id/action_saved"
+            android:title="@string/action_saved" />
+    </group>
+    <group android:id="@+id/group_general">
+        <item
+            android:id="@+id/action_settings"
+            android:title="@string/action_settings" />
+    </group>
 </menu>
