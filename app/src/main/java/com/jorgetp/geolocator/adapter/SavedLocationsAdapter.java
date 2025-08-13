@@ -119,12 +119,13 @@ public class SavedLocationsAdapter extends RecyclerView.Adapter<SavedLocationsAd
                         dialog.setContentView(R.layout.saved_location_item);
 
                         TextView tvTime = dialog.findViewById(R.id.tv_time);
-                        tvTime.setText(holder.tvTime.getText());
-                        tvTime.setTextSize(16);
+                        //tvTime.setText(holder.tvTime.getText());
+                        //tvTime.setTextSize(16);
+                        tvTime.setVisibility(View.GONE);
 
                         TextView tvAddress = dialog.findViewById(R.id.tv_address);
                         tvAddress.setText(holder.tvAddress.getText());
-                        tvAddress.setTextSize(16);
+                        tvAddress.setTextSize(18);
 
                         Window window = dialog.getWindow();
                         if (window != null) {

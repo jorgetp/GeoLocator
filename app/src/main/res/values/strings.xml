@@ -23,6 +23,6 @@
     <string name="coordinates_copied">Coordinates Copied</string>
     <string name="click_on_card_msg">Click on a card to copy its value</string>
     <string name="copy_plus_code">Copy Plus Code</string>
-    <string name="popout">Pop out</string>
+    <string name="popout">Pop Out</string>
     <string name="delete_confirmation">Are you sure you want to delete this saved location?</string>
 </resources>
