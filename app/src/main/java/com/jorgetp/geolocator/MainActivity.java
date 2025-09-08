@@ -3,7 +3,6 @@ package com.jorgetp.geolocator;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -16,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.core.app.ActivityCompat;
@@ -34,6 +34,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.jorgetp.geolocator.adapter.CardsAdapter;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -74,7 +75,6 @@ public class MainActivity extends AppCompatActivity {
                     LOCATION_PERMISSION_REQUEST_CODE);
         }
 
-
         getLocation();
 
         FloatingActionButton fabRefresh = findViewById(R.id.fab_refresh);
@@ -98,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.action_settings) {
             startActivity(new Intent(this, SettingsActivity.class));
             return true;
+
         } else if (id == R.id.action_save) {
             new Thread(() -> {
 
@@ -108,23 +109,28 @@ public class MainActivity extends AppCompatActivity {
                     jsonObject.put("address", address);
                     jsonObject.put("plus_code", plusCode);
 
-                    SharedPreferences sharedPreferences = getSharedPreferences("saved_locations", Context.MODE_PRIVATE);
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
                     long timestamp = System.currentTimeMillis();
-                    editor.putString("" + timestamp, jsonObject.toString());
-                    editor.apply();
-                    runOnUiThread(() -> {
-                        Toast.makeText(this, R.string.location_saved, Toast.LENGTH_SHORT).show();
-                    });
+
+                    getApplicationContext()
+                            .getSharedPreferences("saved_locations", Context.MODE_PRIVATE)
+                            .edit()
+                            .putString("" + timestamp, jsonObject.toString())
+                            .apply();
+
+                    runOnUiThread(() -> Toast.makeText(this,
+                            R.string.location_saved, Toast.LENGTH_SHORT).show());
+
                 } catch (Exception e) {
                     //e.printStackTrace();
                 }
             }).start();
             return true;
-        } else if (id == R.id.action_saved) {
+
+        } else if (id == R.id.action_view_saved) {
             startActivity(new Intent(this, SavedLocationsActivity.class));
             return true;
         }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -154,6 +160,7 @@ public class MainActivity extends AppCompatActivity {
                         getAddress(location, true);
                         getPlusCode(true);
                         Log.d("Location", "Latitude: " + lat + ", Longitude: " + lng);
+
                     } else {
                         Log.w("Location", "Location is null.");
                     }
@@ -185,46 +192,31 @@ public class MainActivity extends AppCompatActivity {
 
     private void getPlusCode(boolean refreshUI) {
         new Thread(() -> {
-            SharedPreferences sharedPreferences = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this);
-            String apiKey = sharedPreferences.getString("api_key", "");
-            String addressSource = sharedPreferences.getString("address_source", "android");
+            String apiKey = getApplicationContext()
+                    .getSharedPreferences("settings", Context.MODE_PRIVATE)
+                    .getString("api_key", "");
             try {
-                // Get address using Geocoding API
-                String geocodeUrlStr = "https://maps.googleapis.com/maps/api/geocode/json?latlng="
-                        + lat + "," + lng + "&key=" + apiKey;
-                URL geocodeUrl = new URL(geocodeUrlStr);
-                HttpURLConnection geocodeConn = (HttpURLConnection) geocodeUrl.openConnection();
-                geocodeConn.setRequestMethod("GET");
-                BufferedReader geocodeReader = new BufferedReader(new InputStreamReader(geocodeConn.getInputStream()));
-                String line;
-                StringBuilder geocodeResponse = new StringBuilder();
-                while ((line = geocodeReader.readLine()) != null) {
-                    geocodeResponse.append(line);
-                }
-                geocodeReader.close();
-                JSONObject geocodeJson = new JSONObject(geocodeResponse.toString());
-                if (addressSource.equals("maps")) {
+                JSONObject geocodeJson = getGeocodeJson(apiKey);
+                if ("Unknown".equals(address)) {
+                    // Get address using Geocoding API
                     JSONArray results = geocodeJson.getJSONArray("results");
-                    if (results.length() > 0) {
+                    if (results.length() > 0)
                         address = results.getJSONObject(0).getString("formatted_address");
-                    } else {
+                    else
                         address = "Unknown";
-                    }
                 }
 
                 // Get Plus Code from geocode response if available
                 JSONObject plusCodeObj = geocodeJson.optJSONObject("plus_code");
                 if (plusCodeObj != null) {
-                    if (plusCodeObj.has("compound_code")) {
+                    if (plusCodeObj.has("compound_code"))
                         plusCode = plusCodeObj.optString("compound_code", "Unknown");
-                    } else if (plusCodeObj.has("global_code")) {
+                    else if (plusCodeObj.has("global_code"))
                         plusCode = plusCodeObj.optString("global_code", "Unknown");
-                    } else {
+                    else
                         plusCode = "Unknown";
-                    }
-                } else {
+                } else
                     plusCode = "Unknown";
-                }
 
             } catch (Exception e) {
                 address = "Unknown";
@@ -235,6 +227,23 @@ public class MainActivity extends AppCompatActivity {
                 runOnUiThread(this::refreshUI);
 
         }).start();
+    }
+
+    @NonNull
+    private JSONObject getGeocodeJson(String apiKey) throws IOException, JSONException {
+        String geocodeUrlStr = "https://maps.googleapis.com/maps/api/geocode/json?latlng="
+                + lat + "," + lng + "&key=" + apiKey;
+        URL geocodeUrl = new URL(geocodeUrlStr);
+        HttpURLConnection geocodeConn = (HttpURLConnection) geocodeUrl.openConnection();
+        geocodeConn.setRequestMethod("GET");
+        BufferedReader geocodeReader = new BufferedReader(new InputStreamReader(geocodeConn.getInputStream()));
+        String line;
+        StringBuilder geocodeResponse = new StringBuilder();
+        while ((line = geocodeReader.readLine()) != null) {
+            geocodeResponse.append(line);
+        }
+        geocodeReader.close();
+        return new JSONObject(geocodeResponse.toString());
     }
 
     private void refreshUI() {

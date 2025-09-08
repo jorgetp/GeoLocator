@@ -3,17 +3,17 @@
     <group android:id="@+id/group_save">
         <item
             android:id="@+id/action_save"
-            android:icon="@drawable/outline_bookmark_add_24"
-            android:title="@string/action_save" />
+            android:icon="@drawable/outline_save_24"
+            android:title="@string/save" />
         <item
-            android:id="@+id/action_saved"
+            android:id="@+id/action_view_saved"
             android:icon="@drawable/outline_book_2_24"
-            android:title="@string/action_saved" />
+            android:title="@string/view_saved" />
     </group>
     <group android:id="@+id/group_general">
         <item
             android:id="@+id/action_settings"
             android:icon="@drawable/outline_settings_24"
-            android:title="@string/action_settings" />
+            android:title="@string/settings" />
     </group>
 </menu>

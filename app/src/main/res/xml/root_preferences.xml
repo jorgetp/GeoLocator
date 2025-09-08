@@ -7,14 +7,6 @@
             app:title="@string/api_key_title"
             app:useSimpleSummaryProvider="true" />
 
-        <ListPreference
-            app:defaultValue="gps"
-            app:entries="@array/address_source_entries"
-            app:entryValues="@array/address_source_values"
-            app:key="address_source"
-            app:title="@string/address_source_title"
-            app:useSimpleSummaryProvider="true" />
-
     </PreferenceCategory>
 
 </PreferenceScreen>

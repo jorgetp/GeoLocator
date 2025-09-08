@@ -1,6 +1,5 @@
 package com.jorgetp.geolocator.adapter;
 
-import android.app.Dialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -9,10 +8,8 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.PopupMenu;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -36,10 +33,11 @@ public class SavedLocationsAdapter extends RecyclerView.Adapter<SavedLocationsAd
     public SavedLocationsAdapter(Context context) {
         this.context = context;
 
-        SharedPreferences sharedPreferences = context.getSharedPreferences("saved_locations", Context.MODE_PRIVATE);
-        for (int i = 0; i < sharedPreferences.getAll().size(); i++) {
-            String key = sharedPreferences.getAll().keySet().toArray()[i].toString();
-            String value = sharedPreferences.getString(key, "{}");
+        SharedPreferences prefs = context.getApplicationContext()
+                .getSharedPreferences("saved_locations", Context.MODE_PRIVATE);
+        for (int i = 0; i < prefs.getAll().size(); i++) {
+            String key = prefs.getAll().keySet().toArray()[i].toString();
+            String value = prefs.getString(key, "{}");
             try {
                 JSONObject jsonObject = new JSONObject(value);
                 savedLocations.add(new Pair<>(Long.parseLong(key), jsonObject));
@@ -74,7 +72,7 @@ public class SavedLocationsAdapter extends RecyclerView.Adapter<SavedLocationsAd
         holder.tvAddress.setText(address);
         holder.card.setOnClickListener(v -> {
             PopupMenu popup = new PopupMenu(context, v);
-            popup.getMenuInflater().inflate(R.menu.saved_location_popup_menu, popup.getMenu());
+            popup.getMenuInflater().inflate(R.menu.menu_saved_location_popup, popup.getMenu());
             MenuCompat.setGroupDividerEnabled(popup.getMenu(), true);
 
             popup.setOnMenuItemClickListener(item -> {
@@ -82,63 +80,40 @@ public class SavedLocationsAdapter extends RecyclerView.Adapter<SavedLocationsAd
                     ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
                     ClipData clip = ClipData.newPlainText("Coordinates", String.format("%s, %s", lat, lng));
                     clipboard.setPrimaryClip(clip);
-                    Toast.makeText(context, R.string.coordinates_copied, Toast.LENGTH_SHORT).show();
+                    // Toast.makeText(context, R.string.copied, Toast.LENGTH_SHORT).show();
 
                 } else if (item.getItemId() == R.id.copy_address) {
                     ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
                     ClipData clip = ClipData.newPlainText("Address", address);
                     clipboard.setPrimaryClip(clip);
-                    Toast.makeText(context, R.string.address_copied, Toast.LENGTH_SHORT).show();
+                    // Toast.makeText(context, R.string.copied, Toast.LENGTH_SHORT).show();
 
                 } else if (item.getItemId() == R.id.copy_plus_code) {
                     ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
                     ClipData clip = ClipData.newPlainText("Plus Code", plusCode);
                     clipboard.setPrimaryClip(clip);
-                    Toast.makeText(context, R.string.plus_code_copied, Toast.LENGTH_SHORT).show();
+                    // Toast.makeText(context, R.string.copied, Toast.LENGTH_SHORT).show();
 
                 } else if (item.getItemId() == R.id.delete) {
                     new AlertDialog.Builder(context)
                             .setMessage(R.string.delete_confirmation)
                             .setPositiveButton(android.R.string.yes, (dialog, id) -> {
-                                SharedPreferences sharedPreferences = context.getSharedPreferences("saved_locations", Context.MODE_PRIVATE);
-                                SharedPreferences.Editor editor = sharedPreferences.edit();
-                                editor.remove("" + savedLocations.get(position).first);
-                                editor.apply();
+                                int p = holder.getAdapterPosition();
 
-                                savedLocations.remove(position);
-                                notifyItemRemoved(position);
-                                Toast.makeText(context, R.string.location_deleted, Toast.LENGTH_SHORT).show();
+                                context.getApplicationContext()
+                                        .getSharedPreferences("saved_locations", Context.MODE_PRIVATE)
+                                        .edit()
+                                        .remove("" + savedLocations.get(p).first)
+                                        .apply();
+
+                                savedLocations.remove(p);
+                                notifyItemRemoved(p);
                             })
                             .setNegativeButton(android.R.string.cancel, null)
                             .create()
                             .show();
                     return true;
 
-                } else if (item.getItemId() == R.id.popout) {
-                    try {
-                        Dialog dialog = new Dialog(context);
-                        dialog.setContentView(R.layout.saved_location_item);
-
-                        TextView tvTime = dialog.findViewById(R.id.tv_time);
-                        tvTime.setText(holder.tvTime.getText());
-                        tvTime.setTextSize(16);
-                        //tvTime.setVisibility(View.GONE);
-
-                        TextView tvAddress = dialog.findViewById(R.id.tv_address);
-                        tvAddress.setText(holder.tvAddress.getText());
-                        tvAddress.setTextSize(16);
-
-                        Window window = dialog.getWindow();
-                        if (window != null) {
-                            window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                            window.setBackgroundDrawableResource(android.R.color.transparent);
-                            window.setDimAmount(0.9f);
-                        }
-                        dialog.show();
-
-                    } catch (Exception ignored) {
-                    }
-                    return true;
                 }
                 return true;
             });

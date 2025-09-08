@@ -48,7 +48,7 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.ViewHolder> 
                     ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
                     ClipData clip = ClipData.newPlainText("Coordinates", lat + ", " + lng);
                     clipboard.setPrimaryClip(clip);
-                    Toast.makeText(context, R.string.coordinates_copied, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, R.string.copied, Toast.LENGTH_SHORT).show();
                 });
                 break;
             case 1:
@@ -59,7 +59,7 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.ViewHolder> 
                     ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
                     ClipData clip = ClipData.newPlainText("Address", address);
                     clipboard.setPrimaryClip(clip);
-                    Toast.makeText(context, R.string.address_copied, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, R.string.copied, Toast.LENGTH_SHORT).show();
                 });
                 break;
             case 2:
@@ -70,7 +70,7 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.ViewHolder> 
                     ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
                     ClipData clip = ClipData.newPlainText("Plus Code", plusCode);
                     clipboard.setPrimaryClip(clip);
-                    Toast.makeText(context, R.string.plus_code_copied, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, R.string.copied, Toast.LENGTH_SHORT).show();
                 });
                 break;
             default:
