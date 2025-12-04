@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Geo Locator</string>
     <string name="api_key_title">Google Maps API Key</string>
-    <string name="your_location">Your Location</string>
+    <string name="current_location">Current Location</string>
     <string name="determining_location">Determining Location…</string>
 
     <string name="settings">Settings</string>

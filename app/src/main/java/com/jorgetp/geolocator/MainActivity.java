@@ -1,12 +1,16 @@
 package com.jorgetp.geolocator;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -19,6 +23,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.MenuCompat;
@@ -28,8 +34,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.Priority;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.jorgetp.geolocator.adapter.CardsAdapter;
 
@@ -47,6 +53,10 @@ import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1001;
+    private static final String NOTIFICATION_CHANNEL_ID = "location_notifications";
+    private static final String TAG = "MainActivity";
+
+    private boolean shouldSendNotification = true;
 
     private FusedLocationProviderClient fusedLocationClient;
     private double lat = 0.0;
@@ -75,12 +85,15 @@ public class MainActivity extends AppCompatActivity {
                     LOCATION_PERMISSION_REQUEST_CODE);
         }
 
+        createNotificationChannel();
+
         getLocation();
 
         FloatingActionButton fabRefresh = findViewById(R.id.fab_refresh);
         fabRefresh.setOnClickListener(v -> getLocation());
     }
 
+    @SuppressLint("RestrictedApi")
     @Override
     public boolean onCreateOptionsMenu(android.view.Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -135,7 +148,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getLocation() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this,
+                        Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
 
@@ -151,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
         progressBar.setVisibility(View.VISIBLE);
 
         fusedLocationClient.getCurrentLocation(
-                        LocationRequest.PRIORITY_HIGH_ACCURACY,
+                        Priority.PRIORITY_HIGH_ACCURACY,
                         null
                 ).addOnSuccessListener(this, location -> {
                     if (location != null) {
@@ -252,11 +268,54 @@ public class MainActivity extends AppCompatActivity {
         rvCards.setAdapter(new CardsAdapter(this, lat, lng, address, plusCode));
         rvCards.setVisibility(View.VISIBLE);
 
-        setTitle(getString(R.string.your_location));
+        setTitle(getString(R.string.current_location));
         ProgressBar progressBar = findViewById(R.id.pb);
         progressBar.setVisibility(View.GONE);
 
         TextView tvMsg = findViewById(R.id.tv_msg);
         tvMsg.setVisibility(View.VISIBLE);
+
+        if (shouldSendNotification) {
+            sendLocationNotification();
+            shouldSendNotification = false;
+        }
+    }
+
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANNEL_ID,
+                    "Location Notifications", NotificationManager.IMPORTANCE_HIGH);
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+            Log.d(TAG, "Notification channel created");
+        }
+    }
+
+
+    private void sendLocationNotification() {
+        // Check notification permission for Android 13+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
+        }
+
+        String locationText = !"Unknown".equals(address) ? address :
+                String.format(Locale.getDefault(), "Lat: %.6f, Lng: %.6f", lat, lng);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this,
+                NOTIFICATION_CHANNEL_ID)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle(getString(R.string.current_location))
+                .setContentText(locationText);
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+        try {
+            notificationManager.notify(782617515, builder.build());
+
+        } catch (Exception e) {
+            // Log.e(TAG, "Failed to send notification - general exception", e);
+        }
     }
 }
