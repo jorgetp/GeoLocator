@@ -2,18 +2,9 @@
     <string name="app_name">Geo Locator</string>
     <string name="current_location">Current Location</string>
     <string name="determining_location">Determining Location…</string>
-
-    <string name="settings">Settings</string>
-    <string name="general_header">General</string>
-
-    <string name="copy_coordinates">Copy Coordinates</string>
-    <string name="copy_address">Copy Address</string>
-
-    <string name="copied">Copied</string>
-
     <string name="coordinates">Coordinates</string>
     <string name="address">Address</string>
     <string name="google_maps">Google Maps</string>
-
+    <string name="copied">Copied</string>
     <string name="click_on_card_msg">Click on a card to copy its value</string>
 </resources>
