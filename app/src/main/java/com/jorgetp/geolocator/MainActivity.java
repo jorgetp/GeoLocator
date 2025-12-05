@@ -12,11 +12,11 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -54,15 +54,13 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity {
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1001;
     private static final String NOTIFICATION_CHANNEL_ID = "location_notifications";
-    private static final String TAG = "MainActivity";
-
-    private boolean shouldSendNotification = true;
 
     private FusedLocationProviderClient fusedLocationClient;
     private double lat = 0.0;
     private double lng = 0.0;
     private String address = "Unknown";
     private String plusCode = "Unknown";
+    private boolean shouldSendNotification = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,8 +93,9 @@ public class MainActivity extends AppCompatActivity {
 
     @SuppressLint("RestrictedApi")
     @Override
-    public boolean onCreateOptionsMenu(android.view.Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
         MenuCompat.setGroupDividerEnabled(menu, true);
         if (menu instanceof MenuBuilder) {
             MenuBuilder m = (MenuBuilder) menu;
@@ -110,37 +109,6 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
         if (id == R.id.action_settings) {
             startActivity(new Intent(this, SettingsActivity.class));
-            return true;
-
-        } else if (id == R.id.action_save) {
-            new Thread(() -> {
-
-                JSONObject jsonObject = new JSONObject();
-                try {
-                    jsonObject.put("lat", lat);
-                    jsonObject.put("lng", lng);
-                    jsonObject.put("address", address);
-                    jsonObject.put("plus_code", plusCode);
-
-                    long timestamp = System.currentTimeMillis();
-
-                    getApplicationContext()
-                            .getSharedPreferences("saved_locations", Context.MODE_PRIVATE)
-                            .edit()
-                            .putString("" + timestamp, jsonObject.toString())
-                            .apply();
-
-                    runOnUiThread(() -> Toast.makeText(this,
-                            R.string.location_saved, Toast.LENGTH_SHORT).show());
-
-                } catch (Exception e) {
-                    //e.printStackTrace();
-                }
-            }).start();
-            return true;
-
-        } else if (id == R.id.action_view_saved) {
-            startActivity(new Intent(this, SavedLocationsActivity.class));
             return true;
         }
 
@@ -167,24 +135,20 @@ public class MainActivity extends AppCompatActivity {
         progressBar.setVisibility(View.VISIBLE);
 
         fusedLocationClient.getCurrentLocation(
-                        Priority.PRIORITY_HIGH_ACCURACY,
-                        null
-                ).addOnSuccessListener(this, location -> {
-                    if (location != null) {
-                        lat = location.getLatitude();
-                        lng = location.getLongitude();
-                        getAddress(location, true);
-                        getPlusCode(true);
-                        Log.d("Location", "Latitude: " + lat + ", Longitude: " + lng);
+                Priority.PRIORITY_HIGH_ACCURACY,
+                null
+        ).addOnSuccessListener(this, location -> {
+            if (location != null) {
+                lat = location.getLatitude();
+                lng = location.getLongitude();
 
-                    } else {
-                        Log.w("Location", "Location is null.");
-                    }
-                })
-                .addOnFailureListener(e -> Log.e("Location", "Failed to get location", e));
+                getAddress(location);
+                getPlusCode();
+            }
+        });
     }
 
-    private void getAddress(Location location, boolean refreshUI) {
+    private void getAddress(Location location) {
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
 
         try {
@@ -196,17 +160,14 @@ public class MainActivity extends AppCompatActivity {
 
             if (addresses != null && !addresses.isEmpty()) {
                 address = addresses.get(0).getAddressLine(0);
-                if (refreshUI) refreshUI();
-                Log.d("Address", "Address: " + address);
-            } else {
-                Log.w("Address", "No address found.");
+                refreshUI();
             }
-        } catch (IOException e) {
-            Log.e("Address", "Geocoder failed", e);
+        } catch (Exception e) {
+            // e.printStackTrace();
         }
     }
 
-    private void getPlusCode(boolean refreshUI) {
+    private void getPlusCode() {
         new Thread(() -> {
             String apiKey = getApplicationContext()
                     .getSharedPreferences("settings", Context.MODE_PRIVATE)
@@ -235,12 +196,12 @@ public class MainActivity extends AppCompatActivity {
                     plusCode = "Unknown";
 
             } catch (Exception e) {
+                // e.printStackTrace();
                 address = "Unknown";
                 plusCode = "Unknown";
             }
 
-            if (refreshUI)
-                runOnUiThread(this::refreshUI);
+            runOnUiThread(this::refreshUI);
 
         }).start();
     }
@@ -287,7 +248,6 @@ public class MainActivity extends AppCompatActivity {
                     "Location Notifications", NotificationManager.IMPORTANCE_HIGH);
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
-            Log.d(TAG, "Notification channel created");
         }
     }
 
@@ -315,7 +275,7 @@ public class MainActivity extends AppCompatActivity {
             notificationManager.notify(782617515, builder.build());
 
         } catch (Exception e) {
-            // Log.e(TAG, "Failed to send notification - general exception", e);
+            // e.printStackTrace();
         }
     }
 }

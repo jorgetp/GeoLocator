@@ -16,14 +16,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GeoLocator">
         <activity
-            android:name=".SavedLocationsActivity"
-            android:exported="false"
-            android:label="@string/saved_locations" />
-        <activity
-            android:name=".SettingsActivity"
-            android:exported="false"
-            android:label="@string/settings" />
-        <activity
             android:name=".MainActivity"
             android:exported="true"
             android:launchMode="singleTask">
@@ -32,6 +24,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".SettingsActivity"
+            android:exported="false"
+            android:label="@string/settings" />
     </application>
 
 </manifest>

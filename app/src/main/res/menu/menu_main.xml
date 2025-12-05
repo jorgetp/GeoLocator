@@ -1,19 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <group android:id="@+id/group_save">
-        <item
-            android:id="@+id/action_save"
-            android:icon="@drawable/outline_save_24"
-            android:title="@string/save" />
-        <item
-            android:id="@+id/action_view_saved"
-            android:icon="@drawable/outline_book_2_24"
-            android:title="@string/view_saved" />
-    </group>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <group android:id="@+id/group_general">
         <item
             android:id="@+id/action_settings"
             android:icon="@drawable/outline_settings_24"
-            android:title="@string/settings" />
+            android:title="@string/settings"
+            app:showAsAction="ifRoom" />
     </group>
 </menu>
