@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Geo Locator</string>
-    <string name="api_key_title">Google Maps API Key</string>
     <string name="current_location">Current Location</string>
     <string name="determining_location">Determining Location…</string>
 
@@ -9,13 +8,12 @@
 
     <string name="copy_coordinates">Copy Coordinates</string>
     <string name="copy_address">Copy Address</string>
-    <string name="copy_plus_code">Copy Plus Code</string>
 
     <string name="copied">Copied</string>
 
     <string name="coordinates">Coordinates</string>
     <string name="address">Address</string>
-    <string name="google_maps_plus_code">Google Maps Plus Code</string>
+    <string name="google_maps">Google Maps</string>
 
     <string name="click_on_card_msg">Click on a card to copy its value</string>
 </resources>

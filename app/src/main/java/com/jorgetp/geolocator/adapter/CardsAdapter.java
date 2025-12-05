@@ -3,6 +3,8 @@ package com.jorgetp.geolocator.adapter;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,14 +22,12 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.ViewHolder> 
     private final double lat;
     private final double lng;
     private final String address;
-    private final String plusCode;
 
-    public CardsAdapter(Context context, double lat, double lng, String address, String plusCode) {
+    public CardsAdapter(Context context, double lat, double lng, String address) {
         this.context = context;
         this.lat = lat;
         this.lng = lng;
         this.address = address;
-        this.plusCode = plusCode;
     }
 
     @NonNull
@@ -63,14 +63,20 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.ViewHolder> 
                 });
                 break;
             case 2:
+                Uri uri = Uri.parse("https://www.google.com/maps/search/?api=1&query=" + lat + "," + lng);
                 holder.ivIcon.setImageResource(R.drawable.outline_map_24);
-                holder.tvTitle.setText(R.string.google_maps_plus_code);
-                holder.tvValue.setText(plusCode);
+                holder.tvTitle.setText(R.string.google_maps);
+                holder.tvValue.setText(uri.toString());
                 holder.card.setOnClickListener(v -> {
-                    ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+                    /*ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
                     ClipData clip = ClipData.newPlainText("Plus Code", plusCode);
                     clipboard.setPrimaryClip(clip);
-                    Toast.makeText(context, R.string.copied, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, R.string.copied, Toast.LENGTH_SHORT).show();*/
+
+                    // Open Google Maps with the provided coordinates
+                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                    intent.setPackage("com.google.android.apps.maps");
+                    context.startActivity(intent);
                 });
                 break;
             default:
