@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Geo Locator</string>
+    <string name="app_name">GeoLocator</string>
     <string name="current_location">Current Location</string>
     <string name="determining_location">Determining Location…</string>
     <string name="coordinates">Coordinates</string>
