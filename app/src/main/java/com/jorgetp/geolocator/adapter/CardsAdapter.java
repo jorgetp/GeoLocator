@@ -41,6 +41,7 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.ViewHolder> 
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         switch (position) {
             case 0:
+                holder.itemView.setBackgroundResource(R.drawable.rounded_top);
                 holder.ivIcon.setImageResource(R.drawable.outline_location_searching_24);
                 holder.tvTitle.setText(R.string.coordinates);
                 holder.tvValue.setText(String.format("%s, %s", lat, lng));
@@ -52,6 +53,7 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.ViewHolder> 
                 });
                 break;
             case 1:
+                holder.itemView.setBackgroundResource(R.drawable.rounded_none);
                 holder.ivIcon.setImageResource(R.drawable.outline_home_24);
                 holder.tvTitle.setText(R.string.address);
                 holder.tvValue.setText(address);
@@ -63,6 +65,7 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.ViewHolder> 
                 });
                 break;
             case 2:
+                holder.itemView.setBackgroundResource(R.drawable.rounded_bottom);
                 Uri uri = Uri.parse("https://www.google.com/maps/search/?api=1&query=" + lat + "," + lng);
                 holder.ivIcon.setImageResource(R.drawable.outline_map_24);
                 holder.tvTitle.setText(R.string.google_maps);

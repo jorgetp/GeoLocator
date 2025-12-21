@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -51,7 +52,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void refreshLocation() {
-        setTitle(getString(R.string.determining_location));
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle(getString(R.string.determining_location));
 
         TextView tvMsg = findViewById(R.id.tv_msg);
         tvMsg.setVisibility(View.GONE);
@@ -71,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
                     rvCards.setAdapter(new CardsAdapter(this, lat, lon, address));
                     rvCards.setVisibility(View.VISIBLE);
 
-                    setTitle(getString(R.string.current_location));
+                    toolbar.setTitle(getString(R.string.current_location));
                     progressBar.setVisibility(View.GONE);
 
                     tvMsg.setVisibility(View.VISIBLE);
