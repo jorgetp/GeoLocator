@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/action_copy_address"
+        android:icon="@android:drawable/ic_menu_edit"
+        android:title="Copy Address" />
+
+    <item
+        android:id="@+id/action_open_maps"
+        android:icon="@android:drawable/ic_dialog_map"
+        android:title="Open in Google Maps" />
+
+    <item
+        android:id="@+id/action_delete"
+        android:icon="@android:drawable/ic_menu_delete"
+        android:title="Delete" />
+</menu>

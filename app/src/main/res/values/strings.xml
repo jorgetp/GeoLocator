@@ -6,5 +6,6 @@
     <string name="address">Address</string>
     <string name="google_maps">Google Maps</string>
     <string name="copied">Copied</string>
-    <string name="click_on_card_msg">Click on cards for actions</string>
+    <string name="click_on_card_msg">Saved Locations</string>
+    <string name="save_location">Save Location</string>
 </resources>

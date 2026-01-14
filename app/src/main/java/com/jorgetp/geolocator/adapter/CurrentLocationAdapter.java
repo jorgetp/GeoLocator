@@ -8,8 +8,6 @@ import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -17,13 +15,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.jorgetp.geolocator.R;
 
-public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.ViewHolder> {
+public class CurrentLocationAdapter extends RecyclerView.Adapter<CardViewHolder> {
     private final Context context;
     private final double lat;
     private final double lng;
     private final String address;
 
-    public CardsAdapter(Context context, double lat, double lng, String address) {
+    public CurrentLocationAdapter(Context context, double lat, double lng, String address) {
         this.context = context;
         this.lat = lat;
         this.lng = lng;
@@ -32,16 +30,15 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.ViewHolder> 
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public CardViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.card_item, parent, false);
-        return new ViewHolder(view);
+        return new CardViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull CardViewHolder holder, int position) {
         switch (position) {
             case 0:
-                holder.itemView.setBackgroundResource(R.drawable.rounded_top);
                 holder.ivIcon.setImageResource(R.drawable.outline_location_searching_24);
                 holder.tvTitle.setText(R.string.coordinates);
                 holder.tvValue.setText(String.format("%s, %s", lat, lng));
@@ -53,7 +50,6 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.ViewHolder> 
                 });
                 break;
             case 1:
-                holder.itemView.setBackgroundResource(R.drawable.rounded_none);
                 holder.ivIcon.setImageResource(R.drawable.outline_home_24);
                 holder.tvTitle.setText(R.string.address);
                 holder.tvValue.setText(address);
@@ -65,7 +61,6 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.ViewHolder> 
                 });
                 break;
             case 2:
-                holder.itemView.setBackgroundResource(R.drawable.rounded_bottom);
                 Uri uri = Uri.parse("https://www.google.com/maps/search/?api=1&query=" + lat + "," + lng);
                 holder.ivIcon.setImageResource(R.drawable.outline_map_24);
                 holder.tvTitle.setText(R.string.google_maps);
@@ -90,20 +85,5 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.ViewHolder> 
     @Override
     public int getItemCount() {
         return 3;
-    }
-
-
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView ivIcon;
-        View card;
-        TextView tvTitle, tvValue;
-
-        public ViewHolder(@NonNull View itemView) {
-            super(itemView);
-            ivIcon = itemView.findViewById(R.id.iv_icon);
-            card = itemView.findViewById(R.id.card);
-            tvTitle = itemView.findViewById(R.id.tv_title);
-            tvValue = itemView.findViewById(R.id.tv_value);
-        }
     }
 }
