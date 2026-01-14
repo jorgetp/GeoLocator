@@ -21,7 +21,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.UUID;
 
 public class SavedLocationsAdapter extends RecyclerView.Adapter<CardViewHolder> {
@@ -78,23 +80,52 @@ public class SavedLocationsAdapter extends RecyclerView.Adapter<CardViewHolder> 
     public void onBindViewHolder(@NonNull CardViewHolder holder, int p) {
         try {
             int position = getItemCount() - p - 1;
-
             JSONObject savedLocation = savedLocations.getJSONObject(position);
 
-            String address = savedLocation.getString("address");
-            long time = savedLocation.getLong("time");
-
             holder.ivIcon.setImageResource(R.drawable.outline_location_searching_24);
-            holder.tvTitle.setText(new Date(time).toString());
-            holder.tvValue.setText(address);
+            holder.tvValue.setText(savedLocation.getString("address"));
+            holder.tvTitle.setText(formatTime(savedLocation.getLong("time")));
 
             // Add click listener for dropdown menu
             holder.itemView.setOnClickListener(v ->
                     showPopupMenu(v, holder.getBindingAdapterPosition(), savedLocation));
 
         } catch (JSONException e) {
-            throw new RuntimeException(e);
+            // e.printStackTrace();
         }
+    }
+
+    private String formatTime(long timestamp) {
+        Date date = new Date(timestamp);
+        long now = System.currentTimeMillis();
+        long diff = now - timestamp;
+
+        // Less than 1 minute ago
+        if (diff < 60 * 1000) {
+            return "Just now";
+        }
+
+        // Less than 1 hour ago
+        if (diff < 60 * 60 * 1000) {
+            int minutes = (int) (diff / (60 * 1000));
+            return minutes + " minute" + (minutes == 1 ? "" : "s") + " ago";
+        }
+
+        // Less than 24 hours ago
+        if (diff < 24 * 60 * 60 * 1000) {
+            int hours = (int) (diff / (60 * 60 * 1000));
+            return hours + " hour" + (hours == 1 ? "" : "s") + " ago";
+        }
+
+        // Less than 7 days ago
+        if (diff < 7 * 24 * 60 * 60 * 1000) {
+            int days = (int) (diff / (24 * 60 * 60 * 1000));
+            return days + " day" + (days == 1 ? "" : "s") + " ago";
+        }
+
+        // More than 7 days ago - show full date
+        SimpleDateFormat sdf = new SimpleDateFormat("EEE, d MMM yyyy, h:mm a", Locale.getDefault());
+        return sdf.format(date);
     }
 
     private void showPopupMenu(View view, int position, JSONObject savedLocation) {

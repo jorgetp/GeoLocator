@@ -52,18 +52,11 @@ public class MainActivity extends AppCompatActivity {
         refreshCurrentLocation();
 
         slAdapter = new SavedLocationsAdapter(this);
-
         rvSavedLocations = findViewById(R.id.rv_saved_locations);
         rvSavedLocations.setLayoutManager(new LinearLayoutManager(this));
 
         FloatingActionButton fabRefresh = findViewById(R.id.fab_refresh);
         fabRefresh.setOnClickListener(v -> refreshCurrentLocation());
-
-        // Remove the save FAB click listener since we're moving to menu
-        // FloatingActionButton fabSave = findViewById(R.id.fab_save);
-        // fabSave.setOnClickListener(v -> {
-        //     slAdapter.addItem(currentLat, currentLng, currentAddress);
-        // });
     }
 
     @Override

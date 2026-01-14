@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">GeoLocator</string>
+    <string name="current_location">Ubicación Actual</string>
+    <string name="determining_location">Determinando Ubicación…</string>
+    <string name="coordinates">Coordenadas</string>
+    <string name="address">Dirección</string>
+    <string name="google_maps">Google Maps</string>
+    <string name="copied">Copiado</string>
+    <string name="click_on_card_msg">Ubicaciones Guardadas</string>
+    <string name="save_location">Guardar Ubicación</string>
+</resources>
