@@ -11,6 +11,11 @@
         android:title="Open in Google Maps" />
 
     <item
+        android:id="@+id/action_manage_tags"
+        android:icon="@android:drawable/ic_menu_manage"
+        android:title="Manage Tags" />
+
+    <item
         android:id="@+id/action_delete"
         android:icon="@android:drawable/ic_menu_delete"
         android:title="Delete" />

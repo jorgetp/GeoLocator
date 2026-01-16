@@ -8,4 +8,8 @@
     <string name="copied">Copiado</string>
     <string name="click_on_card_msg">Ubicaciones Guardadas</string>
     <string name="save_location">Guardar Ubicación</string>
+    <string name="new_tag">Nueva Etiqueta</string>
+    <string name="manage_tags">Administrar Etiquetas</string>
+    <string name="add_tag">Agregar Etiqueta</string>
+    <string name="done">Hecho</string>
 </resources>

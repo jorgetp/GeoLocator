@@ -31,7 +31,7 @@ public class CurrentLocationAdapter extends RecyclerView.Adapter<CardViewHolder>
     @NonNull
     @Override
     public CardViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.card_item, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.current_location_item, parent, false);
         return new CardViewHolder(view);
     }
 
@@ -42,7 +42,7 @@ public class CurrentLocationAdapter extends RecyclerView.Adapter<CardViewHolder>
                 holder.ivIcon.setImageResource(R.drawable.outline_location_searching_24);
                 holder.tvTitle.setText(R.string.coordinates);
                 holder.tvValue.setText(String.format("%s, %s", lat, lng));
-                holder.card.setOnClickListener(v -> {
+                holder.itemView.setOnClickListener(v -> {
                     ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
                     ClipData clip = ClipData.newPlainText("Coordinates", lat + ", " + lng);
                     clipboard.setPrimaryClip(clip);
@@ -53,7 +53,7 @@ public class CurrentLocationAdapter extends RecyclerView.Adapter<CardViewHolder>
                 holder.ivIcon.setImageResource(R.drawable.outline_home_24);
                 holder.tvTitle.setText(R.string.address);
                 holder.tvValue.setText(address);
-                holder.card.setOnClickListener(v -> {
+                holder.itemView.setOnClickListener(v -> {
                     ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
                     ClipData clip = ClipData.newPlainText("Address", address);
                     clipboard.setPrimaryClip(clip);
@@ -65,7 +65,7 @@ public class CurrentLocationAdapter extends RecyclerView.Adapter<CardViewHolder>
                 holder.ivIcon.setImageResource(R.drawable.outline_map_24);
                 holder.tvTitle.setText(R.string.google_maps);
                 holder.tvValue.setText(uri.toString());
-                holder.card.setOnClickListener(v -> {
+                holder.itemView.setOnClickListener(v -> {
                     /*ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
                     ClipData clip = ClipData.newPlainText("Plus Code", plusCode);
                     clipboard.setPrimaryClip(clip);

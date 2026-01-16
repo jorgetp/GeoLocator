@@ -15,7 +15,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.chip.Chip;
 import com.jorgetp.geolocator.R;
+import com.jorgetp.geolocator.dialog.TagManagementDialog;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,7 +39,6 @@ public class SavedLocationsAdapter extends RecyclerView.Adapter<CardViewHolder> 
         try {
             savedLocations = new JSONArray(prefs.getString("saved_locations", "[]"));
         } catch (JSONException e) {
-            //e.printStackTrace();
             savedLocations = new JSONArray();
         }
     }
@@ -45,12 +46,12 @@ public class SavedLocationsAdapter extends RecyclerView.Adapter<CardViewHolder> 
     public void addItem(double lat, double lng, String address) {
         try {
             JSONObject item = new JSONObject();
-
             item.put("id", UUID.randomUUID().toString());
             item.put("lat", lat);
             item.put("lng", lng);
             item.put("address", address);
             item.put("time", System.currentTimeMillis());
+            item.put("tags", new JSONArray()); // Initialize with empty tags
 
             savedLocations.put(item);
 
@@ -67,7 +68,7 @@ public class SavedLocationsAdapter extends RecyclerView.Adapter<CardViewHolder> 
     @NonNull
     @Override
     public CardViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.card_item, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.saved_location_item, parent, false);
         return new CardViewHolder(view);
     }
 
@@ -82,9 +83,11 @@ public class SavedLocationsAdapter extends RecyclerView.Adapter<CardViewHolder> 
             int position = getItemCount() - p - 1;
             JSONObject savedLocation = savedLocations.getJSONObject(position);
 
-            holder.ivIcon.setImageResource(R.drawable.outline_location_searching_24);
-            holder.tvValue.setText(savedLocation.getString("address"));
             holder.tvTitle.setText(formatTime(savedLocation.getLong("time")));
+            holder.tvValue.setText(savedLocation.getString("address"));
+
+            // Display tags
+            displayTags(holder, savedLocation);
 
             // Add click listener for dropdown menu
             holder.itemView.setOnClickListener(v ->
@@ -95,35 +98,51 @@ public class SavedLocationsAdapter extends RecyclerView.Adapter<CardViewHolder> 
         }
     }
 
+    private void displayTags(CardViewHolder holder, JSONObject savedLocation) {
+        try {
+            JSONArray tagsArray = savedLocation.optJSONArray("tags");
+            if (tagsArray != null && tagsArray.length() > 0) {
+                holder.chipGroup.setVisibility(View.VISIBLE);
+                holder.chipGroup.removeAllViews();
+
+                for (int i = 0; i < tagsArray.length(); i++) {
+                    String tag = tagsArray.getString(i);
+                    Chip chip = new Chip(context);
+                    chip.setText(tag);
+                    holder.chipGroup.addView(chip);
+                }
+            } else {
+                holder.chipGroup.setVisibility(View.GONE);
+            }
+        } catch (JSONException e) {
+            holder.chipGroup.setVisibility(View.GONE);
+        }
+    }
+
     private String formatTime(long timestamp) {
         Date date = new Date(timestamp);
-        long now = System.currentTimeMillis();
+        /*long now = System.currentTimeMillis();
         long diff = now - timestamp;
 
-        // Less than 1 minute ago
         if (diff < 60 * 1000) {
             return "Just now";
         }
 
-        // Less than 1 hour ago
         if (diff < 60 * 60 * 1000) {
             int minutes = (int) (diff / (60 * 1000));
             return minutes + " minute" + (minutes == 1 ? "" : "s") + " ago";
         }
 
-        // Less than 24 hours ago
         if (diff < 24 * 60 * 60 * 1000) {
             int hours = (int) (diff / (60 * 60 * 1000));
             return hours + " hour" + (hours == 1 ? "" : "s") + " ago";
         }
 
-        // Less than 7 days ago
         if (diff < 7 * 24 * 60 * 60 * 1000) {
             int days = (int) (diff / (24 * 60 * 60 * 1000));
             return days + " day" + (days == 1 ? "" : "s") + " ago";
-        }
+        }*/
 
-        // More than 7 days ago - show full date
         SimpleDateFormat sdf = new SimpleDateFormat("EEE, d MMM yyyy, h:mm a", Locale.getDefault());
         return sdf.format(date);
     }
@@ -146,6 +165,9 @@ public class SavedLocationsAdapter extends RecyclerView.Adapter<CardViewHolder> 
                 } else if (itemId == R.id.action_open_maps) {
                     openInGoogleMaps(lat, lng);
                     return true;
+                } else if (itemId == R.id.action_manage_tags) {
+                    showTagManagementDialog(position, savedLocation);
+                    return true;
                 } else if (itemId == R.id.action_delete) {
                     deleteItem(position, id);
                     return true;
@@ -160,6 +182,26 @@ public class SavedLocationsAdapter extends RecyclerView.Adapter<CardViewHolder> 
         }
     }
 
+    private void showTagManagementDialog(int position, JSONObject savedLocation) {
+        TagManagementDialog dialog = new TagManagementDialog(context, savedLocation, (updatedLocation) -> {
+            try {
+                // Update the location in the array
+                int actualPosition = getItemCount() - position - 1;
+                savedLocations.put(actualPosition, updatedLocation);
+
+                // Save to SharedPreferences
+                SharedPreferences prefs = context.getSharedPreferences("geo_locator", Context.MODE_PRIVATE);
+                prefs.edit().putString("saved_locations", savedLocations.toString()).apply();
+
+                // Refresh the item
+                notifyItemChanged(position);
+            } catch (JSONException e) {
+                Toast.makeText(context, "Error updating tags", Toast.LENGTH_SHORT).show();
+            }
+        });
+        dialog.show();
+    }
+
     private void copyAddressToClipboard(String address) {
         ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
         ClipData clip = ClipData.newPlainText("Address", address);
@@ -172,21 +214,10 @@ public class SavedLocationsAdapter extends RecyclerView.Adapter<CardViewHolder> 
         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         intent.setPackage("com.google.android.apps.maps");
         context.startActivity(intent);
-
-        /*// Fallback to browser if Google Maps isn't installed
-        if (intent.resolveActivity(context.getPackageManager()) != null) {
-            context.startActivity(intent);
-        } else {
-            // Open in browser as fallback
-            String browserUri = String.format("https://maps.google.com/?q=%f,%f", lat, lng);
-            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(browserUri));
-            context.startActivity(browserIntent);
-        }*/
     }
 
     private void deleteItem(int position, String id) {
         try {
-            // Remove from JSONArray
             JSONArray newArray = new JSONArray();
             for (int i = 0; i < savedLocations.length(); i++) {
                 if (!id.equals(savedLocations.getJSONObject(i).getString("id"))) {
@@ -195,11 +226,9 @@ public class SavedLocationsAdapter extends RecyclerView.Adapter<CardViewHolder> 
             }
             savedLocations = newArray;
 
-            // Save to SharedPreferences
             SharedPreferences prefs = context.getSharedPreferences("geo_locator", Context.MODE_PRIVATE);
             prefs.edit().putString("saved_locations", savedLocations.toString()).apply();
 
-            // Notify adapter
             notifyItemRemoved(position);
 
         } catch (JSONException e) {
