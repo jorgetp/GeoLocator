@@ -15,4 +15,6 @@
     <string name="manage_tags">Administrar Etiquetas</string>
     <string name="add_tag">Agregar</string>
     <string name="done">Hecho</string>
+    <string name="please_enter_a_tag">Por favor ingrese una etiqueta</string>
+    <string name="tag_already_exists">Etiqueta ya existe</string>
 </resources>

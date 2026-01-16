@@ -6,7 +6,7 @@
     android:layout_marginBottom="4dp"
     android:background="@drawable/rounded"
     android:orientation="vertical"
-    android:paddingHorizontal="16dp"
+    android:paddingHorizontal="18dp"
     android:paddingVertical="12dp">
 
     <TextView
@@ -14,7 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Fri, 16 Jan 2026, 4:52 PM"
-        android:textColor="?attr/colorSecondary"
+        android:textColor="?attr/colorSecondaryVariant"
         android:textStyle="bold" />
 
     <TextView

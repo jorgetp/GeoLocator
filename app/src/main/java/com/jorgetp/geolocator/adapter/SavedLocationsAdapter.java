@@ -109,6 +109,7 @@ public class SavedLocationsAdapter extends RecyclerView.Adapter<CardViewHolder> 
                     String tag = tagsArray.getString(i);
                     Chip chip = new Chip(context);
                     chip.setText(tag);
+                    chip.setChipStrokeColorResource(android.R.color.transparent);
                     holder.chipGroup.addView(chip);
                 }
             } else {

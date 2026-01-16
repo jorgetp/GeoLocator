@@ -15,4 +15,6 @@
     <string name="manage_tags">Manage Tags</string>
     <string name="add_tag">Add</string>
     <string name="done">Done</string>
+    <string name="please_enter_a_tag">Please enter a tag</string>
+    <string name="tag_already_exists">Tag already exists</string>
 </resources>

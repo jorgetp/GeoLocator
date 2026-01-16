@@ -55,7 +55,7 @@ public class TagManagementDialog {
                 addTagChip(chipGroup, newTag);
                 editNewTag.setText("");
             } else {
-                Toast.makeText(context, "Please enter a tag", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, R.string.please_enter_a_tag, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -79,7 +79,7 @@ public class TagManagementDialog {
         for (int i = 0; i < chipGroup.getChildCount(); i++) {
             Chip existingChip = (Chip) chipGroup.getChildAt(i);
             if (existingChip.getText().toString().equalsIgnoreCase(tagText)) {
-                Toast.makeText(context, "Tag already exists", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, R.string.tag_already_exists, Toast.LENGTH_SHORT).show();
                 return;
             }
         }
@@ -87,6 +87,7 @@ public class TagManagementDialog {
         Chip chip = new Chip(context);
         chip.setText(tagText);
         chip.setCloseIconVisible(true);
+        chip.setChipStrokeColorResource(android.R.color.transparent);
         chip.setOnCloseIconClickListener(v -> chipGroup.removeView(chip));
 
         chipGroup.addView(chip);
