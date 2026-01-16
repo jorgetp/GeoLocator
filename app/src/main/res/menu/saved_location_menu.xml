@@ -3,20 +3,20 @@
     <item
         android:id="@+id/action_copy_address"
         android:icon="@android:drawable/ic_menu_edit"
-        android:title="Copy Address" />
+        android:title="@string/copy_address" />
 
     <item
         android:id="@+id/action_open_maps"
         android:icon="@android:drawable/ic_dialog_map"
-        android:title="Open in Google Maps" />
+        android:title="@string/open_in_google_maps" />
 
     <item
         android:id="@+id/action_manage_tags"
         android:icon="@android:drawable/ic_menu_manage"
-        android:title="Manage Tags" />
+        android:title="@string/manage_tags" />
 
     <item
         android:id="@+id/action_delete"
         android:icon="@android:drawable/ic_menu_delete"
-        android:title="Delete" />
+        android:title="@string/delete" />
 </menu>

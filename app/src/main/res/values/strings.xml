@@ -8,8 +8,11 @@
     <string name="copied">Copied</string>
     <string name="click_on_card_msg">Saved Locations</string>
     <string name="save_location">Save Location</string>
+    <string name="open_in_google_maps">Open in Google Maps</string>
+    <string name="copy_address">Copy Address</string>
+    <string name="delete">Delete</string>
     <string name="new_tag">New tag</string>
     <string name="manage_tags">Manage Tags</string>
-    <string name="add_tag">Add Tag</string>
+    <string name="add_tag">Add</string>
     <string name="done">Done</string>
 </resources>

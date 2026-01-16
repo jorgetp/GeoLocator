@@ -8,8 +8,11 @@
     <string name="copied">Copiado</string>
     <string name="click_on_card_msg">Ubicaciones Guardadas</string>
     <string name="save_location">Guardar Ubicación</string>
+    <string name="open_in_google_maps">Abrir en Google Maps</string>
+    <string name="copy_address">Copiar Dirección</string>
+    <string name="delete">Eliminar</string>
     <string name="new_tag">Nueva Etiqueta</string>
     <string name="manage_tags">Administrar Etiquetas</string>
-    <string name="add_tag">Agregar Etiqueta</string>
+    <string name="add_tag">Agregar</string>
     <string name="done">Hecho</string>
 </resources>

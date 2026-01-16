@@ -17,9 +17,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class TagManagementDialog {
-    private Context context;
-    private JSONObject location;
-    private OnTagsUpdatedListener listener;
+    private final Context context;
+    private final JSONObject location;
+    private final OnTagsUpdatedListener listener;
 
     public TagManagementDialog(Context context, JSONObject location, OnTagsUpdatedListener listener) {
         this.context = context;
@@ -39,8 +39,8 @@ public class TagManagementDialog {
         AlertDialog dialog = new AlertDialog.Builder(context)
                 .setTitle(R.string.manage_tags)
                 .setView(dialogView)
-                .setPositiveButton(R.string.add_tag, null)
-                .setNegativeButton(R.string.done, (d, which) -> {
+                .setNegativeButton(R.string.add_tag, null)
+                .setPositiveButton(R.string.done, (d, which) -> {
                     updateLocationTags(chipGroup);
                     d.dismiss();
                 })
@@ -49,7 +49,7 @@ public class TagManagementDialog {
         dialog.show();
 
         // Override the positive button to prevent dialog dismissal
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(v -> {
             String newTag = editNewTag.getText().toString().trim().toLowerCase();
             if (!newTag.isEmpty()) {
                 addTagChip(chipGroup, newTag);
