@@ -28,12 +28,20 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.UUID;
 
-public class SavedLocationsAdapter extends RecyclerView.Adapter<CardViewHolder> {
+public class ItemsAdapter extends RecyclerView.Adapter<CardViewHolder> {
     private final Context context;
+    private final double lat;
+    private final double lng;
+    private final String address;
+
     private JSONArray savedLocations;
 
-    public SavedLocationsAdapter(Context context) {
+    public ItemsAdapter(Context context, double lat, double lng, String address) {
         this.context = context;
+        this.lat = lat;
+        this.lng = lng;
+        this.address = address;
+
         SharedPreferences prefs = context.getApplicationContext()
                 .getSharedPreferences("geo_locator", Context.MODE_PRIVATE);
         try {
@@ -58,43 +66,92 @@ public class SavedLocationsAdapter extends RecyclerView.Adapter<CardViewHolder> 
             SharedPreferences prefs = context.getSharedPreferences("geo_locator", Context.MODE_PRIVATE);
             prefs.edit().putString("saved_locations", savedLocations.toString()).apply();
 
-            notifyItemInserted(0);
+            notifyItemInserted(4);
 
         } catch (JSONException e) {
             // e.printStackTrace();
         }
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        if (position < 3)
+            return R.layout.current_location_item;
+        else if (position == 3)
+            return R.layout.header;
+        else
+            return R.layout.saved_location_item;
+    }
+
     @NonNull
     @Override
     public CardViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.saved_location_item, parent, false);
+        View view = LayoutInflater.from(context).inflate(viewType, parent, false);
         return new CardViewHolder(view);
     }
 
     @Override
     public int getItemCount() {
-        return savedLocations.length();
+        return savedLocations.length() + 4;
     }
 
     @Override
     public void onBindViewHolder(@NonNull CardViewHolder holder, int p) {
-        try {
-            int position = getItemCount() - p - 1;
-            JSONObject savedLocation = savedLocations.getJSONObject(position);
+        switch (p) {
+            case 0:
+                holder.ivIcon.setImageResource(R.drawable.outline_location_searching_24);
+                holder.tvTitle.setText(R.string.coordinates);
+                holder.tvValue.setText(String.format("%s, %s", lat, lng));
+                holder.itemView.setOnClickListener(v -> {
+                    ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+                    ClipData clip = ClipData.newPlainText("Coordinates", lat + ", " + lng);
+                    clipboard.setPrimaryClip(clip);
+                    Toast.makeText(context, R.string.copied, Toast.LENGTH_SHORT).show();
+                });
+                break;
+            case 1:
+                holder.ivIcon.setImageResource(R.drawable.outline_home_24);
+                holder.tvTitle.setText(R.string.address);
+                holder.tvValue.setText(address);
+                holder.itemView.setOnClickListener(v -> {
+                    ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+                    ClipData clip = ClipData.newPlainText("Address", address);
+                    clipboard.setPrimaryClip(clip);
+                    Toast.makeText(context, R.string.copied, Toast.LENGTH_SHORT).show();
+                });
+                break;
+            case 2:
+                Uri uri = Uri.parse("https://www.google.com/maps/search/?api=1&query=" + lat + "," + lng);
+                holder.ivIcon.setImageResource(R.drawable.outline_map_24);
+                holder.tvTitle.setText(R.string.google_maps);
+                holder.tvValue.setText(R.string.click_to_open);
+                holder.itemView.setOnClickListener(v -> {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                    intent.setPackage("com.google.android.apps.maps");
+                    context.startActivity(intent);
+                });
+                break;
+            case 3:
+                break;
+            default:
+                try {
+                    int position = getItemCount() - p - 1;
+                    JSONObject savedLocation = savedLocations.getJSONObject(position);
 
-            holder.tvTitle.setText(formatTime(savedLocation.getLong("time")));
-            holder.tvValue.setText(savedLocation.getString("address"));
+                    holder.tvTitle.setText(formatTime(savedLocation.getLong("time")));
+                    holder.tvValue.setText(savedLocation.getString("address"));
 
-            // Display tags
-            displayTags(holder, savedLocation);
+                    // Display tags
+                    displayTags(holder, savedLocation);
 
-            // Add click listener for dropdown menu
-            holder.itemView.setOnClickListener(v ->
-                    showPopupMenu(v, holder.getBindingAdapterPosition(), savedLocation));
+                    // Add click listener for dropdown menu
+                    holder.itemView.setOnClickListener(v ->
+                            showPopupMenu(v, holder.getBindingAdapterPosition(), savedLocation));
 
-        } catch (JSONException e) {
-            // e.printStackTrace();
+                } catch (JSONException e) {
+                    // e.printStackTrace();
+                }
+                break;
         }
     }
 

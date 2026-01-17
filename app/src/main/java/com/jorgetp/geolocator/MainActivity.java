@@ -8,7 +8,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,17 +19,15 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.jorgetp.geolocator.adapter.CurrentLocationAdapter;
-import com.jorgetp.geolocator.adapter.SavedLocationsAdapter;
+import com.jorgetp.geolocator.adapter.ItemsAdapter;
 
 public class MainActivity extends AppCompatActivity {
     public static final String NOTIFICATION_CHANNEL_ID = "geo_locator_channel";
 
-    private SavedLocationsAdapter slAdapter;
-    private RecyclerView rvSavedLocations;
     private double currentLat, currentLng;
     private String currentAddress;
     private boolean locationLoaded = false;
+    private ItemsAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,10 +47,6 @@ public class MainActivity extends AppCompatActivity {
         createNotificationChannel();
 
         refreshCurrentLocation();
-
-        slAdapter = new SavedLocationsAdapter(this);
-        rvSavedLocations = findViewById(R.id.rv_saved_locations);
-        rvSavedLocations.setLayoutManager(new LinearLayoutManager(this));
 
         FloatingActionButton fabRefresh = findViewById(R.id.fab_refresh);
         fabRefresh.setOnClickListener(v -> refreshCurrentLocation());
@@ -76,9 +69,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_save) {
-            if (locationLoaded) {
-                slAdapter.addItem(currentLat, currentLng, currentAddress);
-            }
+            if (locationLoaded)
+                adapter.addItem(currentLat, currentLng, currentAddress);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -100,32 +92,22 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle(getString(R.string.determining_location));
 
-        TextView tvMsg = findViewById(R.id.tv_msg);
-        tvMsg.setVisibility(View.GONE);
-
-        RecyclerView rvCurrentLocation = findViewById(R.id.rv_current_location);
-        rvCurrentLocation.setVisibility(View.GONE);
+        RecyclerView rvItems = findViewById(R.id.rv_items);
+        rvItems.setVisibility(View.GONE);
 
         ProgressBar progressBar = findViewById(R.id.pb);
         progressBar.setVisibility(View.VISIBLE);
-
-        if (rvSavedLocations != null)
-            rvSavedLocations.setAdapter(null);
 
         LocationWorker.handleLocation(
                 this,
                 false,   // do NOT send notification when UI loads
                 (lat, lon, address) -> runOnUiThread(() -> {
-                    rvCurrentLocation.setLayoutManager(new LinearLayoutManager(this));
-                    rvCurrentLocation.setAdapter(new CurrentLocationAdapter(this, lat, lon, address));
-                    rvCurrentLocation.setVisibility(View.VISIBLE);
+                    rvItems.setLayoutManager(new LinearLayoutManager(this));
+                    rvItems.setAdapter(adapter = new ItemsAdapter(this, lat, lon, address));
+                    rvItems.setVisibility(View.VISIBLE);
 
                     toolbar.setTitle(getString(R.string.current_location));
                     progressBar.setVisibility(View.GONE);
-
-                    tvMsg.setVisibility(View.VISIBLE);
-                    if (rvSavedLocations != null)
-                        rvSavedLocations.setAdapter(slAdapter);
 
                     currentLat = lat;
                     currentLng = lon;
