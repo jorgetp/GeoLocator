@@ -109,7 +109,8 @@ public class SavedLocationsAdapter extends RecyclerView.Adapter<CardViewHolder> 
                     String tag = tagsArray.getString(i);
                     Chip chip = new Chip(context);
                     chip.setText(tag);
-                    chip.setChipStrokeColorResource(android.R.color.transparent);
+                    //chip.setChipStrokeColorResource(android.R.color.transparent);
+                    chip.setChipStrokeColorResource(R.color.tag_border);
                     holder.chipGroup.addView(chip);
                 }
             } else {
@@ -144,8 +145,13 @@ public class SavedLocationsAdapter extends RecyclerView.Adapter<CardViewHolder> 
             return days + " day" + (days == 1 ? "" : "s") + " ago";
         }*/
 
+
         SimpleDateFormat sdf = new SimpleDateFormat("EEE, d MMM yyyy, h:mm a", Locale.getDefault());
-        return sdf.format(date);
+        // capitalize first letter
+        char[] chars = sdf.format(date).toCharArray();
+        chars[0] = Character.toUpperCase(chars[0]);
+        return new String(chars);
+        //return sdf.format(date);
     }
 
     private void showPopupMenu(View view, int position, JSONObject savedLocation) {

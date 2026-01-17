@@ -87,7 +87,7 @@ public class TagManagementDialog {
         Chip chip = new Chip(context);
         chip.setText(tagText);
         chip.setCloseIconVisible(true);
-        chip.setChipStrokeColorResource(android.R.color.transparent);
+        //chip.setChipStrokeColorResource(android.R.color.transparent);
         chip.setOnCloseIconClickListener(v -> chipGroup.removeView(chip));
 
         chipGroup.addView(chip);
