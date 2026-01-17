@@ -1,20 +1,21 @@
 <resources>
     <string name="app_name">GeoLocator</string>
-    <string name="current_location">Ubicación Actual</string>
-    <string name="determining_location">Determinando Ubicación…</string>
+    <string name="current_location">Ubicación actual</string>
+    <string name="determining_location">Determinando ubicación…</string>
     <string name="coordinates">Coordenadas</string>
     <string name="address">Dirección</string>
     <string name="google_maps">Google Maps</string>
     <string name="copied">Copiado</string>
-    <string name="click_on_card_msg">Ubicaciones Guardadas</string>
-    <string name="save_location">Guardar Ubicación</string>
+    <string name="click_on_card_msg">Ubicaciones guardadas</string>
+    <string name="save_location">Guardar bbicación</string>
     <string name="open_in_google_maps">Abrir en Google Maps</string>
-    <string name="copy_address">Copiar Dirección</string>
+    <string name="copy_address">Copiar dirección</string>
     <string name="delete">Eliminar</string>
-    <string name="new_tag">Nueva Etiqueta</string>
-    <string name="manage_tags">Administrar Etiquetas</string>
+    <string name="new_tag">Nueva etiqueta</string>
+    <string name="manage_tags">Administrar etiquetas</string>
     <string name="add_tag">Agregar</string>
     <string name="done">Hecho</string>
     <string name="please_enter_a_tag">Por favor ingrese una etiqueta</string>
     <string name="tag_already_exists">Etiqueta ya existe</string>
+    <string name="click_to_open">Toca para abrir…</string>
 </resources>

@@ -13,15 +13,14 @@
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Fri, 16 Jan 2026, 4:52 PM"
-        android:textColor="?attr/colorSecondaryVariant"
+        android:text="Title"
         android:textStyle="bold" />
 
     <TextView
         android:id="@+id/tv_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="[REDACTED ADDRESS]" />
+        android:text="Value" />
 
     <com.google.android.material.chip.ChipGroup
         android:id="@+id/chip_group"
