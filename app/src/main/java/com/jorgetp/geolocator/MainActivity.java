@@ -100,21 +100,25 @@ public class MainActivity extends AppCompatActivity {
 
         LocationWorker.handleLocation(
                 this,
-                (lat, lon, address) -> runOnUiThread(() -> {
-                    rvItems.setLayoutManager(new LinearLayoutManager(this));
-                    rvItems.setAdapter(adapter = new ItemsAdapter(this, lat, lon, address));
-                    rvItems.setVisibility(View.VISIBLE);
-
-                    toolbar.setTitle(getString(R.string.current_location));
-                    progressBar.setVisibility(View.GONE);
-
-                    currentLat = lat;
-                    currentLng = lon;
-                    currentAddress = address;
-                    locationLoaded = true;
-
-                    invalidateOptionsMenu(); // This will enable the save button
-                })
+                (lat, lon, address) -> runOnUiThread(() ->
+                        onLocationLoaded(lat, lon, address, toolbar, rvItems, progressBar))
         );
+    }
+
+    private void onLocationLoaded(double lat, double lon, String address,
+                                  Toolbar toolbar, RecyclerView rvItems, ProgressBar progressBar) {
+        rvItems.setLayoutManager(new LinearLayoutManager(this));
+        rvItems.setAdapter(adapter = new ItemsAdapter(this, lat, lon, address));
+        rvItems.setVisibility(View.VISIBLE);
+
+        toolbar.setTitle(getString(R.string.current_location));
+        progressBar.setVisibility(View.GONE);
+
+        currentLat = lat;
+        currentLng = lon;
+        currentAddress = address;
+        locationLoaded = true;
+
+        invalidateOptionsMenu(); // This will enable the save button
     }
 }
