@@ -2,6 +2,10 @@
 
 Simple Android app for retrieving, displaying, and saving current geolocation information.
 
+| Light theme | Dark theme |
+|:-----------:|:----------:|
+| <img src="screenshot-light.jpg" alt="GeoLocator light theme" width="300"> | <img src="screenshot-dark.jpg" alt="GeoLocator dark theme" width="300"> |
+
 
 ## Features
 - Retrieve current geolocation (coordinates and address)
