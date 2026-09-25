@@ -18,6 +18,6 @@ Simple Android app for retrieving, displaying, and saving current geolocation in
 
 ## Usage
 1. Open the app on your device
-2. Grant location permissions if prompted
-3. View your current location on the map
-4. Save the location for future reference
+2. Grant location permissions (only once)
+3. View your current location
+4. Save the location for future reference (if desired)
