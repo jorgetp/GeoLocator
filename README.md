@@ -1,6 +1,7 @@
 # GeoLocator
 
-Android app for retrieving, displaying, and saving current geolocation information.
+Simple Android app for retrieving, displaying, and saving current geolocation information.
+
 
 ## Features
 - Retrieve current geolocation (coordinates and address)
