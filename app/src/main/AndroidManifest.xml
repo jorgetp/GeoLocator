@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.jorgetp.geolocator">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -14,7 +13,8 @@
         android:localeConfig="@xml/locales_config"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.GeoLocator">
+        android:theme="@style/Theme.GeoLocator"
+        tools:targetApi="33">
 
         <activity
             android:name=".MainActivity"
@@ -24,13 +24,5 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <receiver
-            android:name=".ActionReceiver"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="com.jorgetp.geolocator.ACTION_GET_AND_NOTIFY" />
-            </intent-filter>
-        </receiver>
     </application>
 </manifest>

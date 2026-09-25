@@ -204,11 +204,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<CardViewHolder> {
 
 
         SimpleDateFormat sdf = new SimpleDateFormat("EEE, d MMM yyyy, h:mm a", Locale.getDefault());
-        // capitalize first letter
-        char[] chars = sdf.format(date).toCharArray();
-        chars[0] = Character.toUpperCase(chars[0]);
-        return new String(chars);
-        //return sdf.format(date);
+        return sdf.format(date);
     }
 
     private void showPopupMenu(View view, int position, JSONObject savedLocation) {

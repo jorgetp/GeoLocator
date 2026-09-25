@@ -100,7 +100,6 @@ public class MainActivity extends AppCompatActivity {
 
         LocationWorker.handleLocation(
                 this,
-                false,   // do NOT send notification when UI loads
                 (lat, lon, address) -> runOnUiThread(() -> {
                     rvItems.setLayoutManager(new LinearLayoutManager(this));
                     rvItems.setAdapter(adapter = new ItemsAdapter(this, lat, lon, address));
